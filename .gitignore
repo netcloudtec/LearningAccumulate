@@ -1,0 +1,8 @@
+# Created by .ignore support plugin (hsz.mobi)
+/FlinkLearning/flinkLearning_code/.idea/
+/KafkaLearning/Kafka_code/target/
+/KafkaLearning/Kafka_code/Kafka_code.iml
+/FlinkLearning/flinkLearning_code/flinkLearning_basic.iml
+/RedisLearning/SpringBootRedis/.idea/
+/RedisLearning/SpringBootRedis/SpringBootRedis.iml
+/.idea/
