@@ -1,13 +1,14 @@
-package com.netcloud.elk;
+package com.netcloud.elk.springdata;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ElklearningcodeApplication {
+public class SpringDataElasticSearchMainApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ElklearningcodeApplication.class, args);
-    }
 
+        SpringApplication.run(SpringDataElasticSearchMainApplication.class,args);
+
+    }
 }

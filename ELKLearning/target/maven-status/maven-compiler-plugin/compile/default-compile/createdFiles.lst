@@ -1,0 +1,4 @@
+com/netcloud/elk/springdata/ProductDao.class
+com/netcloud/elk/springdata/ElasticsearchConfig.class
+com/netcloud/elk/springdata/SpringDataElasticSearchMainApplication.class
+com/netcloud/elk/springdata/Product.class
