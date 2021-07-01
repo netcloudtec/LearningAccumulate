@@ -56,5 +56,4 @@ object SparkStreamingESTest {
     ssc.awaitTermination()
   }
 
-
 }
