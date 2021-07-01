@@ -1,0 +1,771 @@
+
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Collaborative Filtering - Spark 2.4.0 Documentation</title>
+
+
+
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+    </style>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <script src="js/vendor/modernizr-2.6.1-respond-1.1.0.min.js"></script>
+
+    <link rel="stylesheet" href="css/pygments-default.css">
+
+
+    <!-- Google analytics script -->
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-32518208-2']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+<!--[if lt IE 7]>
+<p class="chromeframe">You are using an outdated browser. <a href="https://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
+<![endif]-->
+
+<!-- This code is taken from http://twitter.github.com/bootstrap/examples/hero.html -->
+
+<div class="navbar navbar-fixed-top" id="topbar">
+    <div class="navbar-inner">
+        <div class="container">
+            <div class="brand"><a href="index.html">
+                <img src="img/spark-logo-hd.png" style="height:50px;"/></a><span class="version">2.4.0</span>
+            </div>
+            <ul class="nav">
+                <!--TODO(andyk): Add class="active" attribute to li some how.-->
+                <li><a href="index.html">Overview</a></li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Programming Guides<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="quick-start.html">Quick Start</a></li>
+                        <li><a href="rdd-programming-guide.html">RDDs, Accumulators, Broadcasts Vars</a></li>
+                        <li><a href="sql-programming-guide.html">SQL, DataFrames, and Datasets</a></li>
+                        <li><a href="structured-streaming-programming-guide.html">Structured Streaming</a></li>
+                        <li><a href="streaming-programming-guide.html">Spark Streaming (DStreams)</a></li>
+                        <li><a href="ml-guide.html">MLlib (Machine Learning)</a></li>
+                        <li><a href="graphx-programming-guide.html">GraphX (Graph Processing)</a></li>
+                        <li><a href="sparkr.html">SparkR (R on Spark)</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">API Docs<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="api/scala/index.html#org.apache.spark.package">Scala</a></li>
+                        <li><a href="api/java/index.html">Java</a></li>
+                        <li><a href="api/python/index.html">Python</a></li>
+                        <li><a href="api/R/index.html">R</a></li>
+                        <li><a href="api/sql/index.html">SQL, Built-in Functions</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Deploying<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="cluster-overview.html">Overview</a></li>
+                        <li><a href="submitting-applications.html">Submitting Applications</a></li>
+                        <li class="divider"></li>
+                        <li><a href="spark-standalone.html">Spark Standalone</a></li>
+                        <li><a href="running-on-mesos.html">Mesos</a></li>
+                        <li><a href="running-on-yarn.html">YARN</a></li>
+                        <li><a href="running-on-kubernetes.html">Kubernetes</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="api.html" class="dropdown-toggle" data-toggle="dropdown">More<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="configuration.html">Configuration</a></li>
+                        <li><a href="monitoring.html">Monitoring</a></li>
+                        <li><a href="tuning.html">Tuning Guide</a></li>
+                        <li><a href="job-scheduling.html">Job Scheduling</a></li>
+                        <li><a href="security.html">Security</a></li>
+                        <li><a href="hardware-provisioning.html">Hardware Provisioning</a></li>
+                        <li class="divider"></li>
+                        <li><a href="building-spark.html">Building Spark</a></li>
+                        <li><a href="https://spark.apache.org/contributing.html">Contributing to Spark</a></li>
+                        <li><a href="https://spark.apache.org/third-party-projects.html">Third Party Projects</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <!--<p class="navbar-text pull-right"><span class="version-text">v2.4.0</span></p>-->
+        </div>
+    </div>
+</div>
+
+<div class="container-wrapper">
+
+
+    <div class="left-menu-wrapper">
+        <div class="left-menu">
+            <h3><a href="ml-guide.html">机器学习库(MLlib) 指南</a></h3>
+
+            <ul>
+
+                <li>
+                    <a href="ml-statistics.html">
+
+                        基本统计
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-datasource.html">
+
+                        数据源
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-pipeline.html">
+
+                        Pipelines (管道)
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-features.html">
+
+                        特征提取, 转换和选择
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-classification-regression.html">
+
+                        分类和回归
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-clustering.html">
+
+                        聚类
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-collaborative-filtering.html">
+
+                        协同过滤
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-frequent-pattern-mining.html">
+
+                        频繁模式挖掘
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-tuning.html">
+
+                        模型选择和调整
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-advanced.html">
+
+                        高级主题
+
+                    </a>
+                </li>
+
+
+
+            </ul>
+
+            <h3><a href="mllib-guide.html">MLlib：基于RDD的API指南</a></h3>
+
+            <ul>
+
+                <li>
+                    <a href="mllib-data-types.html">
+
+                        数据类型
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-statistics.html">
+
+                        基本统计
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-classification-regression.html">
+
+                        分类和回归
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-collaborative-filtering.html">
+
+                        协同过滤
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-clustering.html">
+
+                        聚类
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-dimensionality-reduction.html">
+
+                        降维
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-feature-extraction.html">
+
+                        特征提取,转换和选择
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-frequent-pattern-mining.html">
+
+                        频繁模式数据挖掘
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-evaluation-metrics.html">
+
+                        评估指标
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-pmml-model-export.html">
+
+                        PMML 模型导出
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-optimization.html">
+
+                        优化 (开发人员)
+
+                    </a>
+                </li>
+
+
+
+            </ul>
+
+        </div>
+    </div>
+    <input id="nav-trigger" class="nav-trigger" checked type="checkbox">
+    <label for="nav-trigger"></label>
+    <div class="content-with-sidebar" id="content">
+
+        <h1 class="title">Collaborative Filtering （协同过滤）</h1>
+
+
+        <ul id="markdown-toc">
+            <li><a href="#collaborative-filtering" id="markdown-toc-collaborative-filtering">Collaborative filtering （协同过滤）</a>    <ul>
+                <li><a href="#explicit-vs-implicit-feedback" id="markdown-toc-explicit-vs-implicit-feedback">Explicit vs. implicit feedback （显式与隐式反馈）</a></li>
+                <li><a href="#scaling-of-the-regularization-parameter" id="markdown-toc-scaling-of-the-regularization-parameter">Scaling of the regularization parameter （正则化参数缩放）</a></li>
+                <li><a href="#cold-start-strategy" id="markdown-toc-cold-start-strategy">Cold-start strategy 冷启动策略</a></li>
+            </ul>
+            </li>
+        </ul>
+
+        <h2 id="collaborative-filtering">Collaborative filtering （协同过滤）</h2>
+
+        <p><a href="http://en.wikipedia.org/wiki/Recommender_system#Collaborative_filtering">Collaborative filtering （协同过滤）</a>
+            协作过滤通常用于推荐系统。 这些技术旨在补充用户—商品关联矩阵中所缺失的部分。
+           <img src="img/collaborative_filtering.jpg"/><br/>
+            <code>spark.ml</code> 目前支持基于模型的协同过滤,其中 users（用户）和 products （商品）被一组可以用来预测缺失项目的潜在因子来描述。
+            <code>spark.ml</code> 使用 <a href="http://dl.acm.org/citation.cfm?id=1608614"> ALS（交替最小二乘法）</a>
+            来学习这些潜在因子。 <code>spark.ml</code> 中的实现具有以下参数：</p>
+
+        <ul>
+            <li><em>numBlocks</em>是用户和商品将被分区以便并行化计算的块数（默认值为10）。</li>
+            <li><em>rank</em> 是模型中潜在因素的数量（默认为10）。</li>
+            <li><em>maxIter</em> 是要运行的最大迭代次数（默认为10）。</li>
+            <li><em>regParam</em> 指定ALS中的正则化参数（默认为1.0）。</li>
+            <li><em>implicitPrefs</em> 指定是使用 <em>explicit feedback</em> （显式反馈) ALS的版本，还是用适用于
+                <em>implicit feedback</em> (隐式反馈)数据集的版本（默认值为 <code>false</code>，这意味着使用<em>explicit feedback</em>）。</li>
+            <li><em>alpha</em> 是适用于ALS的隐式反馈变量的参数；
+                其控制偏好观察中的 <em>baseline</em> 置信度。(默认为1.0)。</li>
+            <li><em>nonnegative</em> 指定是否对最小二乘使用非负约束（默认为<code>false</code>）。</li>
+        </ul>
+
+        <p><strong>注意:</strong>
+            基于DataFrame的ALS API目前仅支持user （用户）和 item （商品） ids（项ID）的整数。 user和item id列支持其他数字类型，但id必须在整数值范围内。
+        </p>
+
+        <h3 id="explicit-vs-implicit-feedback">Explicit vs. implicit feedback （显式与隐式反馈）</h3>
+
+        <p>基于矩阵分解的协同过滤的标准方法是将用户-商品关联矩阵中的元素视为用户对商品的<em>explicit</em> preferences （显式偏好），例如用户对电影的评分。
+         </p>
+        <p>
+            用户对物品或者信息的偏好，根据应用本身的不同，可能包括用户对物品的评分、用户查看物品的记录、用户的购买记录等。其实这些用户的偏好信息可以分为两类：</br>
+            <strong>显式的用户反馈：</strong>这类是用户在网站上自然浏览或者使用网站以外，显式地提供反馈信息，例如用户对物品的评分或者对物品的评论。</br>
+           <strong>隐式的用户反馈：</strong> 这类是用户在使用网站是产生的数据，隐式地反映了用户对物品的喜好，例如用户购买了某物品，用户查看了某物品的信息，等等。 </br>
+        </p>
+        <p>在现实生活中的许多用例中，通常只能接触到 <em>implicit feedback</em> （隐式的反馈）（例如浏览，点击，购买，喜欢，分享等）。
+            在<code>spark.ml</code> 中使用基于
+            <a href="http://dx.doi.org/10.1109/ICDM.2008.22">隐式反馈数据集的协同过滤</a>的方法来处理这些数据。
+            这种方法不是直接对数据矩阵进行建模，
+            而是将数据视为代表用户行为意愿强度的数字（例如点击的次数或某人累积观看电影的时间）。然后，这些数字
+            与观察到的用户偏好的置信水平相关，而不是给予项目的明确评级。
+            然后，该模型尝试找到可用于预测用户对项目的预期偏好的潜在因素。
+        </p>
+
+        <h3 id="scaling-of-the-regularization-parameter">Scaling of the regularization parameter （正则化参数的缩放）</h3>
+
+        <p>我们通过用户在更新用户因素时产生的评级数或在更新商品因子时收到的产品评级数来缩小正则化参数regParam以解决每个最小二乘问题。
+            这种方法被命名为 &#8220;ALS-WR&#8221;并在论文
+            &#8220;<a href="http://dx.doi.org/10.1007/978-3-540-68880-8_32">Large-Scale Parallel Collaborative Filtering for the Netflix Prize</a>&#8221;中进行了讨论。
+            它使<code>regParam</code>对数据集的规模依赖较少, 因此我们可以将从采样子集学到的最佳参数应用于完整数据集，并期望能有相似的表现。</p>
+
+        <h3 id="cold-start-strategy">Cold-start strategy</h3>
+
+        <p>在使用 <code>ALSModel</code>进行预测时，通常会遇到测试数据集中的用户和/或商品，这些用户和/或商品在训练模型期间不存在。这通常发生在两种情况中：</p>
+
+        <ol>
+            <li>在生产中，对于没有评级历史且未对模型进行过训练的新用户或商品（这是“冷启动问题”）。</li>
+            <li>在交叉验证期间，数据在被拆分为训练集和评估集。
+                当使用Spark的<code>CrossValidator</code> 或<code>TrainValidationSplit</code>, 中的简单随机拆分时，实际上很常见的是在评估集中遇到不在训练集中的用户和/或商品
+                默认情况下，</li>
+        </ol>
+
+        <p>当模型中不存在用户和/或商品因子时，Spark会在 <code>ALSModel.transform</code>期间分配<code>NaN</code> 预测。
+
+            这在生产系统中很有用，因为它表示新用户或商品，因此系统可以决定使用某些后备作为预测。</p>
+
+        <p>
+            但是，这在交叉验证期间是不合需要的，因为任何<code>NaN</code>预测值都将导致评估指标的<code>NaN</code>结果
+            （例如，使用<code>RegressionEvaluator</code>时）。这使得模型选择不可能。
+        </p>
+
+        <p>Spark 允许用户将<code>coldStartStrategy</code> 参数设置为“drop”，以便删除包含<code>NaN</code>值的预测的<code>DataFrame</code>中的任何行。
+            然后将根据非<code>NaN</code>数据计算评估度量并且该评估度量将是有效的。以下示例说明了此参数的用法。
+        </p>
+
+        <p><strong>注意:</strong>目前支持的冷启动策略是&#8220;nan&#8221; (上面提到的默认行为) 和 &#8220;drop&#8221;。
+            将来可能会支持进一步的策略。</p>
+
+        <p><strong>示例</strong></p>
+
+        <div class="codetabs">
+            <div data-lang="scala">
+
+                <p>在以下示例中，我们从
+                    <a href="http://grouplens.org/datasets/movielens/">MovieLens</a>数据集加载评分数据，, each row
+                    每行由用户，电影，评分和时间戳组成。
+                    然后，我们训练一个 ALS 模型，默认情况下假定评分是显式的(<code>implicitPrefs</code> is <code>false</code>).
+                    我们通过测量评级预测的root-mean-square error（均方根误差）来评估推荐模型。</p>
+
+                <p>有关API的更多详细信息，请参阅<a href="api/scala/index.html#org.apache.spark.ml.recommendation.ALS"><code>ALS</code> Scala 文档</a>。
+                    </p>
+
+                <div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">org.apache.spark.ml.evaluation.RegressionEvaluator</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.ml.recommendation.ALS</span>
+
+<span class="k">case</span> <span class="k">class</span> <span class="nc">Rating</span><span class="o">(</span><span class="n">userId</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">movieId</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">rating</span><span class="k">:</span> <span class="kt">Float</span><span class="o">,</span> <span class="n">timestamp</span><span class="k">:</span> <span class="kt">Long</span><span class="o">)</span>
+<span class="k">def</span> <span class="n">parseRating</span><span class="o">(</span><span class="n">str</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Rating</span> <span class="o">=</span> <span class="o">{</span>
+  <span class="k">val</span> <span class="n">fields</span> <span class="k">=</span> <span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">&quot;::&quot;</span><span class="o">)</span>
+  <span class="n">assert</span><span class="o">(</span><span class="n">fields</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">4</span><span class="o">)</span>
+  <span class="nc">Rating</span><span class="o">(</span><span class="n">fields</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="n">toInt</span><span class="o">,</span> <span class="n">fields</span><span class="o">(</span><span class="mi">1</span><span class="o">).</span><span class="n">toInt</span><span class="o">,</span> <span class="n">fields</span><span class="o">(</span><span class="mi">2</span><span class="o">).</span><span class="n">toFloat</span><span class="o">,</span> <span class="n">fields</span><span class="o">(</span><span class="mi">3</span><span class="o">).</span><span class="n">toLong</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="k">val</span> <span class="n">ratings</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&quot;data/mllib/als/sample_movielens_ratings.txt&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">parseRating</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">toDF</span><span class="o">()</span>
+<span class="k">val</span> <span class="nc">Array</span><span class="o">(</span><span class="n">training</span><span class="o">,</span> <span class="n">test</span><span class="o">)</span> <span class="k">=</span> <span class="n">ratings</span><span class="o">.</span><span class="n">randomSplit</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="mf">0.8</span><span class="o">,</span> <span class="mf">0.2</span><span class="o">))</span>
+
+<span class="c1">// Build the recommendation model using ALS on the training data</span>
+<span class="k">val</span> <span class="n">als</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">ALS</span><span class="o">()</span>
+  <span class="o">.</span><span class="n">setMaxIter</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setRegParam</span><span class="o">(</span><span class="mf">0.01</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setUserCol</span><span class="o">(</span><span class="s">&quot;userId&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setItemCol</span><span class="o">(</span><span class="s">&quot;movieId&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setRatingCol</span><span class="o">(</span><span class="s">&quot;rating&quot;</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">model</span> <span class="k">=</span> <span class="n">als</span><span class="o">.</span><span class="n">fit</span><span class="o">(</span><span class="n">training</span><span class="o">)</span>
+
+<span class="c1">// Evaluate the model by computing the RMSE on the test data</span>
+<span class="c1">// Note we set cold start strategy to &#39;drop&#39; to ensure we don&#39;t get NaN evaluation metrics</span>
+<span class="n">model</span><span class="o">.</span><span class="n">setColdStartStrategy</span><span class="o">(</span><span class="s">&quot;drop&quot;</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">predictions</span> <span class="k">=</span> <span class="n">model</span><span class="o">.</span><span class="n">transform</span><span class="o">(</span><span class="n">test</span><span class="o">)</span>
+
+<span class="k">val</span> <span class="n">evaluator</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">RegressionEvaluator</span><span class="o">()</span>
+  <span class="o">.</span><span class="n">setMetricName</span><span class="o">(</span><span class="s">&quot;rmse&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setLabelCol</span><span class="o">(</span><span class="s">&quot;rating&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setPredictionCol</span><span class="o">(</span><span class="s">&quot;prediction&quot;</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">rmse</span> <span class="k">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="o">(</span><span class="n">predictions</span><span class="o">)</span>
+<span class="n">println</span><span class="o">(</span><span class="s">s&quot;Root-mean-square error = </span><span class="si">$rmse</span><span class="s">&quot;</span><span class="o">)</span>
+
+<span class="c1">// Generate top 10 movie recommendations for each user</span>
+<span class="k">val</span> <span class="n">userRecs</span> <span class="k">=</span> <span class="n">model</span><span class="o">.</span><span class="n">recommendForAllUsers</span><span class="o">(</span><span class="mi">10</span><span class="o">)</span>
+<span class="c1">// Generate top 10 user recommendations for each movie</span>
+<span class="k">val</span> <span class="n">movieRecs</span> <span class="k">=</span> <span class="n">model</span><span class="o">.</span><span class="n">recommendForAllItems</span><span class="o">(</span><span class="mi">10</span><span class="o">)</span>
+
+<span class="c1">// Generate top 10 movie recommendations for a specified set of users</span>
+<span class="k">val</span> <span class="n">users</span> <span class="k">=</span> <span class="n">ratings</span><span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="n">als</span><span class="o">.</span><span class="n">getUserCol</span><span class="o">).</span><span class="n">distinct</span><span class="o">().</span><span class="n">limit</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">userSubsetRecs</span> <span class="k">=</span> <span class="n">model</span><span class="o">.</span><span class="n">recommendForUserSubset</span><span class="o">(</span><span class="n">users</span><span class="o">,</span> <span class="mi">10</span><span class="o">)</span>
+<span class="c1">// Generate top 10 user recommendations for a specified set of movies</span>
+<span class="k">val</span> <span class="n">movies</span> <span class="k">=</span> <span class="n">ratings</span><span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="n">als</span><span class="o">.</span><span class="n">getItemCol</span><span class="o">).</span><span class="n">distinct</span><span class="o">().</span><span class="n">limit</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">movieSubSetRecs</span> <span class="k">=</span> <span class="n">model</span><span class="o">.</span><span class="n">recommendForItemSubset</span><span class="o">(</span><span class="n">movies</span><span class="o">,</span> <span class="mi">10</span><span class="o">)</span>
+</pre></div>
+                <div><small>可以在 Spark repo 中的"examples/src/main/scala/org/apache/spark/examples/ml/ALSExample.scala"中查找完整的示例代码。</small></div>
+
+                <p>如果评分矩阵是来自于另一个信息来源（即从其他信号推断出来），您可以将
+                    设置为 <code>implicitPrefs</code> 为true 以获得更好的结果</p>
+
+                <figure class="highlight"><pre><code class="language-scala" data-lang="scala"><span></span><span class="k">val</span> <span class="n">als</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">ALS</span><span class="o">()</span>
+  <span class="o">.</span><span class="n">setMaxIter</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setRegParam</span><span class="o">(</span><span class="mf">0.01</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setImplicitPrefs</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setUserCol</span><span class="o">(</span><span class="s">&quot;userId&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setItemCol</span><span class="o">(</span><span class="s">&quot;movieId&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setRatingCol</span><span class="o">(</span><span class="s">&quot;rating&quot;</span><span class="o">)</span></code></pre></figure>
+
+            </div>
+
+            <div data-lang="java">
+
+                <p>In the following example, we load ratings data from the
+                    <a href="http://grouplens.org/datasets/movielens/">MovieLens dataset</a>, each row
+                    consisting of a user, a movie, a rating and a timestamp.
+                    We then train an ALS model which assumes, by default, that the ratings are
+                    explicit (<code>implicitPrefs</code> is <code>false</code>).
+                    We evaluate the recommendation model by measuring the root-mean-square error of
+                    rating prediction.</p>
+
+                <p>Refer to the <a href="api/java/org/apache/spark/ml/recommendation/ALS.html"><code>ALS</code> Java docs</a>
+                    for more details on the API.</p>
+
+                <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">java.io.Serializable</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.spark.api.java.JavaRDD</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.ml.evaluation.RegressionEvaluator</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.ml.recommendation.ALS</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.ml.recommendation.ALSModel</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Rating</span> <span class="kd">implements</span> <span class="n">Serializable</span> <span class="o">{</span>
+  <span class="kd">private</span> <span class="kt">int</span> <span class="n">userId</span><span class="o">;</span>
+  <span class="kd">private</span> <span class="kt">int</span> <span class="n">movieId</span><span class="o">;</span>
+  <span class="kd">private</span> <span class="kt">float</span> <span class="n">rating</span><span class="o">;</span>
+  <span class="kd">private</span> <span class="kt">long</span> <span class="n">timestamp</span><span class="o">;</span>
+
+  <span class="kd">public</span> <span class="nf">Rating</span><span class="o">()</span> <span class="o">{}</span>
+
+  <span class="kd">public</span> <span class="nf">Rating</span><span class="o">(</span><span class="kt">int</span> <span class="n">userId</span><span class="o">,</span> <span class="kt">int</span> <span class="n">movieId</span><span class="o">,</span> <span class="kt">float</span> <span class="n">rating</span><span class="o">,</span> <span class="kt">long</span> <span class="n">timestamp</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">userId</span> <span class="o">=</span> <span class="n">userId</span><span class="o">;</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">movieId</span> <span class="o">=</span> <span class="n">movieId</span><span class="o">;</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">rating</span> <span class="o">=</span> <span class="n">rating</span><span class="o">;</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">timestamp</span> <span class="o">=</span> <span class="n">timestamp</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getUserId</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">userId</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getMovieId</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">movieId</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">float</span> <span class="nf">getRating</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">rating</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">long</span> <span class="nf">getTimestamp</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">timestamp</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="n">Rating</span> <span class="nf">parseRating</span><span class="o">(</span><span class="n">String</span> <span class="n">str</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">String</span><span class="o">[]</span> <span class="n">fields</span> <span class="o">=</span> <span class="n">str</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">&quot;::&quot;</span><span class="o">);</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">fields</span><span class="o">.</span><span class="na">length</span> <span class="o">!=</span> <span class="mi">4</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalArgumentException</span><span class="o">(</span><span class="s">&quot;Each line must contain 4 fields&quot;</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="kt">int</span> <span class="n">userId</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">fields</span><span class="o">[</span><span class="mi">0</span><span class="o">]);</span>
+    <span class="kt">int</span> <span class="n">movieId</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">fields</span><span class="o">[</span><span class="mi">1</span><span class="o">]);</span>
+    <span class="kt">float</span> <span class="n">rating</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="na">parseFloat</span><span class="o">(</span><span class="n">fields</span><span class="o">[</span><span class="mi">2</span><span class="o">]);</span>
+    <span class="kt">long</span> <span class="n">timestamp</span> <span class="o">=</span> <span class="n">Long</span><span class="o">.</span><span class="na">parseLong</span><span class="o">(</span><span class="n">fields</span><span class="o">[</span><span class="mi">3</span><span class="o">]);</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">Rating</span><span class="o">(</span><span class="n">userId</span><span class="o">,</span> <span class="n">movieId</span><span class="o">,</span> <span class="n">rating</span><span class="o">,</span> <span class="n">timestamp</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="n">JavaRDD</span><span class="o">&lt;</span><span class="n">Rating</span><span class="o">&gt;</span> <span class="n">ratingsRDD</span> <span class="o">=</span> <span class="n">spark</span>
+  <span class="o">.</span><span class="na">read</span><span class="o">().</span><span class="na">textFile</span><span class="o">(</span><span class="s">&quot;data/mllib/als/sample_movielens_ratings.txt&quot;</span><span class="o">).</span><span class="na">javaRDD</span><span class="o">()</span>
+  <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">Rating</span><span class="o">::</span><span class="n">parseRating</span><span class="o">);</span>
+<span class="n">Dataset</span><span class="o">&lt;</span><span class="n">Row</span><span class="o">&gt;</span> <span class="n">ratings</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="na">createDataFrame</span><span class="o">(</span><span class="n">ratingsRDD</span><span class="o">,</span> <span class="n">Rating</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="n">Dataset</span><span class="o">&lt;</span><span class="n">Row</span><span class="o">&gt;[]</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">ratings</span><span class="o">.</span><span class="na">randomSplit</span><span class="o">(</span><span class="k">new</span> <span class="kt">double</span><span class="o">[]{</span><span class="mf">0.8</span><span class="o">,</span> <span class="mf">0.2</span><span class="o">});</span>
+<span class="n">Dataset</span><span class="o">&lt;</span><span class="n">Row</span><span class="o">&gt;</span> <span class="n">training</span> <span class="o">=</span> <span class="n">splits</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span>
+<span class="n">Dataset</span><span class="o">&lt;</span><span class="n">Row</span><span class="o">&gt;</span> <span class="n">test</span> <span class="o">=</span> <span class="n">splits</span><span class="o">[</span><span class="mi">1</span><span class="o">];</span>
+
+<span class="c1">// Build the recommendation model using ALS on the training data</span>
+<span class="n">ALS</span> <span class="n">als</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ALS</span><span class="o">()</span>
+  <span class="o">.</span><span class="na">setMaxIter</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">setRegParam</span><span class="o">(</span><span class="mf">0.01</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">setUserCol</span><span class="o">(</span><span class="s">&quot;userId&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">setItemCol</span><span class="o">(</span><span class="s">&quot;movieId&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">setRatingCol</span><span class="o">(</span><span class="s">&quot;rating&quot;</span><span class="o">);</span>
+<span class="n">ALSModel</span> <span class="n">model</span> <span class="o">=</span> <span class="n">als</span><span class="o">.</span><span class="na">fit</span><span class="o">(</span><span class="n">training</span><span class="o">);</span>
+
+<span class="c1">// Evaluate the model by computing the RMSE on the test data</span>
+<span class="c1">// Note we set cold start strategy to &#39;drop&#39; to ensure we don&#39;t get NaN evaluation metrics</span>
+<span class="n">model</span><span class="o">.</span><span class="na">setColdStartStrategy</span><span class="o">(</span><span class="s">&quot;drop&quot;</span><span class="o">);</span>
+<span class="n">Dataset</span><span class="o">&lt;</span><span class="n">Row</span><span class="o">&gt;</span> <span class="n">predictions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="na">transform</span><span class="o">(</span><span class="n">test</span><span class="o">);</span>
+
+<span class="n">RegressionEvaluator</span> <span class="n">evaluator</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RegressionEvaluator</span><span class="o">()</span>
+  <span class="o">.</span><span class="na">setMetricName</span><span class="o">(</span><span class="s">&quot;rmse&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">setLabelCol</span><span class="o">(</span><span class="s">&quot;rating&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">setPredictionCol</span><span class="o">(</span><span class="s">&quot;prediction&quot;</span><span class="o">);</span>
+<span class="n">Double</span> <span class="n">rmse</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="na">evaluate</span><span class="o">(</span><span class="n">predictions</span><span class="o">);</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Root-mean-square error = &quot;</span> <span class="o">+</span> <span class="n">rmse</span><span class="o">);</span>
+
+<span class="c1">// Generate top 10 movie recommendations for each user</span>
+<span class="n">Dataset</span><span class="o">&lt;</span><span class="n">Row</span><span class="o">&gt;</span> <span class="n">userRecs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="na">recommendForAllUsers</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+<span class="c1">// Generate top 10 user recommendations for each movie</span>
+<span class="n">Dataset</span><span class="o">&lt;</span><span class="n">Row</span><span class="o">&gt;</span> <span class="n">movieRecs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="na">recommendForAllItems</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+
+<span class="c1">// Generate top 10 movie recommendations for a specified set of users</span>
+<span class="n">Dataset</span><span class="o">&lt;</span><span class="n">Row</span><span class="o">&gt;</span> <span class="n">users</span> <span class="o">=</span> <span class="n">ratings</span><span class="o">.</span><span class="na">select</span><span class="o">(</span><span class="n">als</span><span class="o">.</span><span class="na">getUserCol</span><span class="o">()).</span><span class="na">distinct</span><span class="o">().</span><span class="na">limit</span><span class="o">(</span><span class="mi">3</span><span class="o">);</span>
+<span class="n">Dataset</span><span class="o">&lt;</span><span class="n">Row</span><span class="o">&gt;</span> <span class="n">userSubsetRecs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="na">recommendForUserSubset</span><span class="o">(</span><span class="n">users</span><span class="o">,</span> <span class="mi">10</span><span class="o">);</span>
+<span class="c1">// Generate top 10 user recommendations for a specified set of movies</span>
+<span class="n">Dataset</span><span class="o">&lt;</span><span class="n">Row</span><span class="o">&gt;</span> <span class="n">movies</span> <span class="o">=</span> <span class="n">ratings</span><span class="o">.</span><span class="na">select</span><span class="o">(</span><span class="n">als</span><span class="o">.</span><span class="na">getItemCol</span><span class="o">()).</span><span class="na">distinct</span><span class="o">().</span><span class="na">limit</span><span class="o">(</span><span class="mi">3</span><span class="o">);</span>
+<span class="n">Dataset</span><span class="o">&lt;</span><span class="n">Row</span><span class="o">&gt;</span> <span class="n">movieSubSetRecs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="na">recommendForItemSubset</span><span class="o">(</span><span class="n">movies</span><span class="o">,</span> <span class="mi">10</span><span class="o">);</span>
+</pre></div>
+                <div><small>Find full example code at "examples/src/main/java/org/apache/spark/examples/ml/JavaALSExample.java" in the Spark repo.</small></div>
+
+                <p>If the rating matrix is derived from another source of information (i.e. it is
+                    inferred from other signals), you can set <code>implicitPrefs</code> to <code>true</code> to get
+                    better results:</p>
+
+                <figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">ALS</span> <span class="n">als</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ALS</span><span class="o">()</span>
+  <span class="o">.</span><span class="na">setMaxIter</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">setRegParam</span><span class="o">(</span><span class="mf">0.01</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">setImplicitPrefs</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">setUserCol</span><span class="o">(</span><span class="s">&quot;userId&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">setItemCol</span><span class="o">(</span><span class="s">&quot;movieId&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">setRatingCol</span><span class="o">(</span><span class="s">&quot;rating&quot;</span><span class="o">);</span></code></pre></figure>
+
+            </div>
+
+            <div data-lang="python">
+
+                <p>In the following example, we load ratings data from the
+                    <a href="http://grouplens.org/datasets/movielens/">MovieLens dataset</a>, each row
+                    consisting of a user, a movie, a rating and a timestamp.
+                    We then train an ALS model which assumes, by default, that the ratings are
+                    explicit (<code>implicitPrefs</code> is <code>False</code>).
+                    We evaluate the recommendation model by measuring the root-mean-square error of
+                    rating prediction.</p>
+
+                <p>Refer to the <a href="api/python/pyspark.ml.html#pyspark.ml.recommendation.ALS"><code>ALS</code> Python docs</a>
+                    for more details on the API.</p>
+
+                <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.evaluation</span> <span class="kn">import</span> <span class="n">RegressionEvaluator</span>
+<span class="kn">from</span> <span class="nn">pyspark.ml.recommendation</span> <span class="kn">import</span> <span class="n">ALS</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">Row</span>
+
+<span class="n">lines</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;data/mllib/als/sample_movielens_ratings.txt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rdd</span>
+<span class="n">parts</span> <span class="o">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;::&quot;</span><span class="p">))</span>
+<span class="n">ratingsRDD</span> <span class="o">=</span> <span class="n">parts</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">Row</span><span class="p">(</span><span class="n">userId</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">movieId</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                                     <span class="n">rating</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">timestamp</span><span class="o">=</span><span class="nb">long</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">])))</span>
+<span class="n">ratings</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">ratingsRDD</span><span class="p">)</span>
+<span class="p">(</span><span class="n">training</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span> <span class="o">=</span> <span class="n">ratings</span><span class="o">.</span><span class="n">randomSplit</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+
+<span class="c1"># Build the recommendation model using ALS on the training data</span>
+<span class="c1"># Note we set cold start strategy to &#39;drop&#39; to ensure we don&#39;t get NaN evaluation metrics</span>
+<span class="n">als</span> <span class="o">=</span> <span class="n">ALS</span><span class="p">(</span><span class="n">maxIter</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">regParam</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">userCol</span><span class="o">=</span><span class="s2">&quot;userId&quot;</span><span class="p">,</span> <span class="n">itemCol</span><span class="o">=</span><span class="s2">&quot;movieId&quot;</span><span class="p">,</span> <span class="n">ratingCol</span><span class="o">=</span><span class="s2">&quot;rating&quot;</span><span class="p">,</span>
+          <span class="n">coldStartStrategy</span><span class="o">=</span><span class="s2">&quot;drop&quot;</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">als</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">training</span><span class="p">)</span>
+
+<span class="c1"># Evaluate the model by computing the RMSE on the test data</span>
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+<span class="n">evaluator</span> <span class="o">=</span> <span class="n">RegressionEvaluator</span><span class="p">(</span><span class="n">metricName</span><span class="o">=</span><span class="s2">&quot;rmse&quot;</span><span class="p">,</span> <span class="n">labelCol</span><span class="o">=</span><span class="s2">&quot;rating&quot;</span><span class="p">,</span>
+                                <span class="n">predictionCol</span><span class="o">=</span><span class="s2">&quot;prediction&quot;</span><span class="p">)</span>
+<span class="n">rmse</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Root-mean-square error = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rmse</span><span class="p">))</span>
+
+<span class="c1"># Generate top 10 movie recommendations for each user</span>
+<span class="n">userRecs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">recommendForAllUsers</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="c1"># Generate top 10 user recommendations for each movie</span>
+<span class="n">movieRecs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">recommendForAllItems</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="c1"># Generate top 10 movie recommendations for a specified set of users</span>
+<span class="n">users</span> <span class="o">=</span> <span class="n">ratings</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">als</span><span class="o">.</span><span class="n">getUserCol</span><span class="p">())</span><span class="o">.</span><span class="n">distinct</span><span class="p">()</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">userSubsetRecs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">recommendForUserSubset</span><span class="p">(</span><span class="n">users</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="c1"># Generate top 10 user recommendations for a specified set of movies</span>
+<span class="n">movies</span> <span class="o">=</span> <span class="n">ratings</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">als</span><span class="o">.</span><span class="n">getItemCol</span><span class="p">())</span><span class="o">.</span><span class="n">distinct</span><span class="p">()</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">movieSubSetRecs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">recommendForItemSubset</span><span class="p">(</span><span class="n">movies</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</pre></div>
+                <div><small>Find full example code at "examples/src/main/python/ml/als_example.py" in the Spark repo.</small></div>
+
+                <p>If the rating matrix is derived from another source of information (i.e. it is
+                    inferred from other signals), you can set <code>implicitPrefs</code> to <code>True</code> to get
+                    better results:</p>
+
+                <figure class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="n">als</span> <span class="o">=</span> <span class="n">ALS</span><span class="p">(</span><span class="n">maxIter</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">regParam</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">implicitPrefs</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+          <span class="n">userCol</span><span class="o">=</span><span class="s2">&quot;userId&quot;</span><span class="p">,</span> <span class="n">itemCol</span><span class="o">=</span><span class="s2">&quot;movieId&quot;</span><span class="p">,</span> <span class="n">ratingCol</span><span class="o">=</span><span class="s2">&quot;rating&quot;</span><span class="p">)</span></code></pre></figure>
+
+            </div>
+
+            <div data-lang="r">
+
+                <p>Refer to the <a href="api/R/spark.als.html">R API docs</a> for more details.</p>
+
+                <div class="highlight"><pre><span></span><span class="c1"># Load training data</span>
+data <span class="o">&lt;-</span> <span class="kt">list</span><span class="p">(</span><span class="kt">list</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="m">4.0</span><span class="p">),</span> <span class="kt">list</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">2.0</span><span class="p">),</span> <span class="kt">list</span><span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">3.0</span><span class="p">),</span>
+             <span class="kt">list</span><span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">4.0</span><span class="p">),</span> <span class="kt">list</span><span class="p">(</span><span class="m">2</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">1.0</span><span class="p">),</span> <span class="kt">list</span><span class="p">(</span><span class="m">2</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">5.0</span><span class="p">))</span>
+df <span class="o">&lt;-</span> createDataFrame<span class="p">(</span>data<span class="p">,</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;userId&quot;</span><span class="p">,</span> <span class="s">&quot;movieId&quot;</span><span class="p">,</span> <span class="s">&quot;rating&quot;</span><span class="p">))</span>
+training <span class="o">&lt;-</span> df
+test <span class="o">&lt;-</span> df
+
+<span class="c1"># Fit a recommendation model using ALS with spark.als</span>
+model <span class="o">&lt;-</span> spark.als<span class="p">(</span>training<span class="p">,</span> maxIter <span class="o">=</span> <span class="m">5</span><span class="p">,</span> regParam <span class="o">=</span> <span class="m">0.01</span><span class="p">,</span> userCol <span class="o">=</span> <span class="s">&quot;userId&quot;</span><span class="p">,</span>
+                   itemCol <span class="o">=</span> <span class="s">&quot;movieId&quot;</span><span class="p">,</span> ratingCol <span class="o">=</span> <span class="s">&quot;rating&quot;</span><span class="p">)</span>
+
+<span class="c1"># Model summary</span>
+<span class="kp">summary</span><span class="p">(</span>model<span class="p">)</span>
+
+<span class="c1"># Prediction</span>
+predictions <span class="o">&lt;-</span> predict<span class="p">(</span>model<span class="p">,</span> test<span class="p">)</span>
+<span class="kp">head</span><span class="p">(</span>predictions<span class="p">)</span>
+</pre></div>
+                <div><small>Find full example code at "examples/src/main/r/ml/als.R" in the Spark repo.</small></div>
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <!-- /container -->
+</div>
+
+<script src="js/vendor/jquery-1.8.0.min.js"></script>
+<script src="js/vendor/bootstrap.min.js"></script>
+<script src="js/vendor/anchor.min.js"></script>
+<script src="js/main.js"></script>
+
+<!-- MathJax Section -->
+<script type="text/x-mathjax-config">
+            MathJax.Hub.Config({
+                TeX: { equationNumbers: { autoNumber: "AMS" } }
+            });
+        </script>
+<script>
+    // Note that we load MathJax this way to work with local file (file://), HTTP and HTTPS.
+    // We could use "//cdn.mathjax...", but that won't support "file://".
+    (function(d, script) {
+        script = d.createElement('script');
+        script.type = 'text/javascript';
+        script.async = true;
+        script.onload = function(){
+            MathJax.Hub.Config({
+                tex2jax: {
+                    inlineMath: [ ["$", "$"], ["\\\\(","\\\\)"] ],
+                    displayMath: [ ["$$","$$"], ["\\[", "\\]"] ],
+                    processEscapes: true,
+                    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+                }
+            });
+        };
+        script.src = ('https:' == document.location.protocol ? 'https://' : 'http://') +
+            'cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js' +
+            '?config=TeX-AMS-MML_HTMLorMML';
+        d.getElementsByTagName('head')[0].appendChild(script);
+    }(document));
+</script>
+</body>
+</html>

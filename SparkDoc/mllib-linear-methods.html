@@ -1,0 +1,1207 @@
+
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Linear Methods - RDD-based API - Spark 2.4.0 Documentation</title>
+
+
+
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+    </style>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <script src="js/vendor/modernizr-2.6.1-respond-1.1.0.min.js"></script>
+
+    <link rel="stylesheet" href="css/pygments-default.css">
+
+
+    <!-- Google analytics script -->
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-32518208-2']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+<!--[if lt IE 7]>
+<p class="chromeframe">You are using an outdated browser. <a href="https://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
+<![endif]-->
+
+<!-- This code is taken from http://twitter.github.com/bootstrap/examples/hero.html -->
+
+<div class="navbar navbar-fixed-top" id="topbar">
+    <div class="navbar-inner">
+        <div class="container">
+            <div class="brand"><a href="index.html">
+                <img src="img/spark-logo-hd.png" style="height:50px;"/></a><span class="version">2.4.0</span>
+            </div>
+            <ul class="nav">
+                <!--TODO(andyk): Add class="active" attribute to li some how.-->
+                <li><a href="index.html">概述</a></li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">编程指南<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="quick-start.html">Quick Start</a></li>
+                        <li><a href="rdd-programming-guide.html">RDDs, Accumulators, Broadcasts Vars</a></li>
+                        <li><a href="sql-programming-guide.html">SQL, DataFrames, and Datasets</a></li>
+                        <li><a href="structured-streaming-programming-guide.html">Structured Streaming</a></li>
+                        <li><a href="streaming-programming-guide.html">Spark Streaming (DStreams)</a></li>
+                        <li><a href="ml-guide.html">MLlib (Machine Learning)</a></li>
+                        <li><a href="graphx-programming-guide.html">GraphX (Graph Processing)</a></li>
+                        <li><a href="sparkr.html">SparkR (R on Spark)</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">API 文档<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="api/scala/index.html#org.apache.spark.package">Scala</a></li>
+                        <li><a href="api/java/index.html">Java</a></li>
+                        <li><a href="api/python/index.html">Python</a></li>
+                        <li><a href="api/R/index.html">R</a></li>
+                        <li><a href="api/sql/index.html">SQL, Built-in Functions</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">部署<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="cluster-overview.html">Overview</a></li>
+                        <li><a href="submitting-applications.html">Submitting Applications</a></li>
+                        <li class="divider"></li>
+                        <li><a href="spark-standalone.html">Spark Standalone</a></li>
+                        <li><a href="running-on-mesos.html">Mesos</a></li>
+                        <li><a href="running-on-yarn.html">YARN</a></li>
+                        <li><a href="running-on-kubernetes.html">Kubernetes</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="api.html" class="dropdown-toggle" data-toggle="dropdown">更多<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="configuration.html">Configuration</a></li>
+                        <li><a href="monitoring.html">Monitoring</a></li>
+                        <li><a href="tuning.html">Tuning Guide</a></li>
+                        <li><a href="job-scheduling.html">Job Scheduling</a></li>
+                        <li><a href="security.html">Security</a></li>
+                        <li><a href="hardware-provisioning.html">Hardware Provisioning</a></li>
+                        <li class="divider"></li>
+                        <li><a href="building-spark.html">Building Spark</a></li>
+                        <li><a href="https://spark.apache.org/contributing.html">Contributing to Spark</a></li>
+                        <li><a href="https://spark.apache.org/third-party-projects.html">Third Party Projects</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <!--<p class="navbar-text pull-right"><span class="version-text">v2.4.0</span></p>-->
+        </div>
+    </div>
+</div>
+
+<div class="container-wrapper">
+
+
+
+    <div class="left-menu-wrapper">
+        <div class="left-menu">
+            <h3><a href="ml-guide.html">机器学习库(MLlib) 指南</a></h3>
+
+            <ul>
+
+                <li>
+                    <a href="ml-statistics.html">
+
+                        基本统计
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-datasource">
+
+                        数据源
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-pipeline.html">
+
+                        Pipelines (管道)
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-features.html">
+
+                        特征提取, 转换和选择
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-classification-regression.html">
+
+                        分类和回归
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-clustering.html">
+
+                        聚类
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-collaborative-filtering.html">
+
+                        协同过滤
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-frequent-pattern-mining.html">
+
+                        繁模式挖掘
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-tuning.html">
+
+                        模型选择和调整
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-advanced.html">
+
+                        高级主题
+
+                    </a>
+                </li>
+
+
+
+            </ul>
+
+            <h3><a href="mllib-guide.html">MLlib：基于RDD的API指南</a></h3>
+
+            <ul>
+
+                <li>
+                    <a href="mllib-data-types.html">
+
+                        数据类型
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-statistics.html">
+
+                        基本统计
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-classification-regression.html">
+
+                        分类和回归
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-collaborative-filtering.html">
+
+                        协同过滤
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-clustering.html">
+
+                        聚类
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-dimensionality-reduction.html">
+
+                        降维
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-feature-extraction.html">
+
+                        特征提取,转换和选择
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-frequent-pattern-mining.html">
+
+                        频繁模式数据挖掘
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-evaluation-metrics.html">
+
+                        评估指标
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-pmml-model-export.html">
+
+                        PMML 模型导出
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-optimization.html">
+
+                        优化 (开发人员)
+
+                    </a>
+                </li>
+
+
+
+            </ul>
+
+        </div>
+    </div>
+
+    <input id="nav-trigger" class="nav-trigger" checked type="checkbox">
+    <label for="nav-trigger"></label>
+    <div class="content-with-sidebar" id="content">
+
+        <h1 class="title">线性方法-基于RDD的API</h1>
+
+
+        <ul id="markdown-toc">
+            <li><a href="#mathematical-formulation" id="markdown-toc-mathematical-formulation">数学公式</a>    <ul>
+                <li><a href="#loss-functions" id="markdown-toc-loss-functions">损失函数</a></li>
+                <li><a href="#regularizers" id="markdown-toc-regularizers">正则化</a></li>
+                <li><a href="#optimization" id="markdown-toc-optimization">优化</a></li>
+            </ul>
+            </li>
+            <li><a href="#classification" id="markdown-toc-classification">分类</a>    <ul>
+                <li><a href="#linear-support-vector-machines-svms" id="markdown-toc-linear-support-vector-machines-svms">线性支持向量机 (SVMs)</a></li>
+                <li><a href="#logistic-regression" id="markdown-toc-logistic-regression">逻辑回归</a></li>
+            </ul>
+            </li>
+            <li><a href="#regression" id="markdown-toc-regression">回归</a>    <ul>
+                <li><a href="#linear-least-squares-lasso-and-ridge-regression" id="markdown-toc-linear-least-squares-lasso-and-ridge-regression">Linear least squares, Lasso, and ridge regression（线性最小二乘法，套索和岭回归）</a></li>
+                <li><a href="#streaming-linear-regression" id="markdown-toc-streaming-linear-regression">Streaming linear regression（流线性回归）</a></li>
+            </ul>
+            </li>
+            <li><a href="#implementation-developer" id="markdown-toc-implementation-developer">实施 (开发者)</a></li>
+        </ul>
+
+        <p><code>\[
+            \newcommand{\R}{\mathbb{R}}
+            \newcommand{\E}{\mathbb{E}}
+            \newcommand{\x}{\mathbf{x}}
+            \newcommand{\y}{\mathbf{y}}
+            \newcommand{\wv}{\mathbf{w}}
+            \newcommand{\av}{\mathbf{\alpha}}
+            \newcommand{\bv}{\mathbf{b}}
+            \newcommand{\N}{\mathbb{N}}
+            \newcommand{\id}{\mathbf{I}}
+            \newcommand{\ind}{\mathbf{1}}
+            \newcommand{\0}{\mathbf{0}}
+            \newcommand{\unit}{\mathbf{e}}
+            \newcommand{\one}{\mathbf{1}}
+            \newcommand{\zero}{\mathbf{0}}
+            \]</code></p>
+
+        <h2 id="mathematical-formulation">数学公式</h2>
+
+        <p>许多标准的 <em>机器学习</em> 方法可以表述为凸优化问题, 即寻找凸函数  <code>$f$</code>  的最小化问题。
+            该函数取决于具有 <code>$d$</code> 个条目的变量向量 <code>$\wv$</code>  （在代码中称为权重）。
+            形式上，我们可以将其写为优化问题 <code>$\min_{\wv \in\R^d} \; f(\wv)$</code>，其中目标函数的形式为
+            <code>\begin{equation}
+                f(\wv) := \lambda\, R(\wv) +
+                \frac1n \sum_{i=1}^n L(\wv;\x_i,y_i)
+                \label{eq:regPrimal}
+                \ .
+                \end{equation}</code>
+            这里的向量 <code>$\x_i\in\R^d$</code> 是训练数据的示例, 对于 <code>$1\le i\le n$</code>,
+            <code>$y_i\in\R$</code> 是它们的对应标签，我们要对其进行预测。
+            如果 $L(\wv; \x, y)$ 可以表示为 $\wv^T x$ 和 $y$ 的函数，我们称此方法为<em>线性</em>。
+            在 <code>spark.mllib</code>&#8217;的几种分类和回归算法都属于此类，在此进行讨论。</p>
+
+        <p>目标函数 <code>$f$</code> 由两部分组成：:
+            控制模型复杂度的正则化函数和在训练数据上测量模型误差的损失。
+            损失函数 <code>$L(\wv;.)$</code> 通常是 <code>$\wv$</code> 中的凸函数。  The
+            固定的正则化参数 <code>$\lambda \ge 0$</code> (代码中的 <code>regParam</code>)
+            定义了两个目标之间的权衡，这两个目标是最小化损失(即训练误差) 和最小化模型复杂度 (即避免过度拟合)。</p>
+
+        <h3 id="loss-functions">损失函数</h3>
+
+        <p>
+            下表总结了 <code>spark.mllib</code> 支持的方法的损失函数及其梯度或子梯度：
+        </p>
+
+        <table class="table">
+            <thead>
+            <tr><th></th><th>loss function $L(\wv; \x, y)$</th><th>gradient or sub-gradient</th></tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>hinge loss</td><td>$\max \{0, 1-y \wv^T \x \}, \quad y \in \{-1, +1\}$</td>
+                <td>$\begin{cases}-y \cdot \x &amp; \text{if $y \wv^T \x &lt;1$}, \\ 0 &amp;
+                    \text{otherwise}.\end{cases}$</td>
+            </tr>
+            <tr>
+                <td>logistic loss</td><td>$\log(1+\exp( -y \wv^T \x)), \quad y \in \{-1, +1\}$</td>
+                <td>$-y \left(1-\frac1{1+\exp(-y \wv^T \x)} \right) \cdot \x$</td>
+            </tr>
+            <tr>
+                <td>squared loss</td><td>$\frac{1}{2} (\wv^T \x - y)^2, \quad y \in \R$</td>
+                <td>$(\wv^T \x - y) \cdot \x$</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <p>注意，在上面的数学公式中，二进制标记 $y$ 表示为
+            $+1$ (正类) 或 $-1$ (负类),这对于公式表示很方便。
+            <em>但是</em>, 负标记在 <code>spark.mllib</code>  中用 $0$ 而不是 $-1$ 表示，以便与多类标记一致。
+            </p>
+
+        <h3 id="regularizers">正则化</h3>
+
+        <p>
+            <a href="http://en.wikipedia.org/wiki/Regularization_(mathematics)">正则化</a> 的目的就是防止模型过拟合。
+            在 <code>spark.mllib</code> 中我们支持下面的正则化：</p>
+
+        <table class="table">
+            <thead>
+            <tr><th></th><th>regularizer $R(\wv)$</th><th>gradient or sub-gradient</th></tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>zero (unregularized)</td><td>0</td><td>$\0$</td>
+            </tr>
+            <tr>
+                <td>L2</td><td>$\frac{1}{2}\|\wv\|_2^2$</td><td>$\wv$</td>
+            </tr>
+            <tr>
+                <td>L1</td><td>$\|\wv\|_1$</td><td>$\mathrm{sign}(\wv)$</td>
+            </tr>
+            <tr>
+                <td>elastic net</td><td>$\alpha \|\wv\|_1 + (1-\alpha)\frac{1}{2}\|\wv\|_2^2$</td><td>$\alpha \mathrm{sign}(\wv) + (1-\alpha) \wv$</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <p>这里的 <code>$\mathrm{sign}(\wv)$</code> 是由 <code>$\wv$</code> 的所有项的符号 (<code>$\pm1$</code>) 组成的向量。 </p>
+
+        <p>由于平滑性，L2正则化的问题通常比L1正则化的问题更容易解决。
+            但是，L1正则化可以帮助促进权重的稀疏性，从而导致模型更小，更易解释，而后者对于特征选择非常有用。
+
+            <a href="http://en.wikipedia.org/wiki/Elastic_net_regularization">Elastic net</a>
+            是L1和L2正则化的组合。 不建议在不进行任何正则化的情况下训练模型，尤其是在训练示例的数量较少时。</p>
+
+        <h3 id="optimization">优化</h3>
+
+        <p>在幕后，线性方法使用凸优化方法来优化目标函数。
+            <code>spark.mllib</code> 使用两种方法，
+            SGD和L-BFGS，在 <a href="mllib-optimization.html">优化部分</a> 中进行了介绍。
+            当前，大多数算法API支持随机梯度下降（SGD），而少数支持L-BFGS。 有关在两种优化方法之间进行选择的指导，请参阅<a href="mllib-optimization.html#Choosing-an-Optimization-Method">此优化部分</a>。
+        </p>
+
+        <h2 id="classification">分类</h2>
+
+        <p><a href="http://en.wikipedia.org/wiki/Statistical_classification">分类</a> 的目的就是将类目分成多个类别 。
+            最常见的就是
+            <a href="http://en.wikipedia.org/wiki/Binary_classification">二分类</a>, 通常被命名为正类（我们要寻找的类）和负类。
+            如果有多个类别, 则被称为
+            <a href="http://en.wikipedia.org/wiki/Multiclass_classification">多分类</a>。
+            <code>spark.mllib</code> 支持两种线性分类方法: 线性支持向量机 (SVMs)
+            和逻辑回归。
+            线性 SVMs 仅支持二分类, 而逻辑回归同时支持二分类和多分类。
+            对于这两种算法, <code>spark.mllib</code> 支持 L1 和 L2 正则化变量。
+            训练数据集由MLlib中 <a href="mllib-data-types.html#labeled-point">LabeledPoint</a>的RDD表示，
+            其中标签是从零开始的索引: $0, 1, 2, \ldots$.</p>
+
+        <h3 id="linear-support-vector-machines-svms">线性支持向量机 (SVMs)</h3>
+
+        <p><a href="http://en.wikipedia.org/wiki/Support_vector_machine#Linear_SVM">线性 SVM</a>
+            是用于大规模分类任务的标准方法。如上面的公式（1）描述的；这是一种线性方法；下面是损失函数：</p>
+
+        <p><code>\[
+            L(\wv;\x,y) := \max \{0, 1-y \wv^T \x \}.
+            \]</code>
+            默认情况下，线性SVM使用L2正则化训练。 我们还支持替代的L1正则化。 在这种情况下，问题就变成了
+            <a href="http://en.wikipedia.org/wiki/Linear_programming">线性程序。</a></p>
+
+        <p>线性SVM算法输出一个SVM模型。 给定一个新的数据点，
+            用 $\x$ 表示, 该模型基于 $\wv^T \x$ 的值进行预测。 默认情况下，如果
+             $\wv^T \x \geq 0$ t，则结果为正，否则为负。</p>
+
+        <p><strong>示例</strong></p>
+
+        <div class="codetabs">
+
+            <div data-lang="scala">
+                <p>以下代码段说明了如何加载样本数据集，如何使用算法对象中的静态方法对此训练数据执行训练算法以及如何使用所得模型进行预测以计算训练误差。</p>
+
+                <p>有关API的详细信息，请参考<a href="api/scala/index.html#org.apache.spark.mllib.classification.SVMWithSGD"><code>SVMWithSGD</code> Scala 文档</a> 和 <a href="api/scala/index.html#org.apache.spark.mllib.classification.SVMModel"><code>SVMModel</code> Scala 文档</a> 。</p>
+
+                <div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">org.apache.spark.mllib.classification.</span><span class="o">{</span><span class="nc">SVMModel</span><span class="o">,</span> <span class="nc">SVMWithSGD</span><span class="o">}</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.mllib.evaluation.BinaryClassificationMetrics</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.mllib.util.MLUtils</span>
+
+<span class="c1">// Load training data in LIBSVM format.</span>
+<span class="k">val</span> <span class="n">data</span> <span class="k">=</span> <span class="nc">MLUtils</span><span class="o">.</span><span class="n">loadLibSVMFile</span><span class="o">(</span><span class="n">sc</span><span class="o">,</span> <span class="s">&quot;data/mllib/sample_libsvm_data.txt&quot;</span><span class="o">)</span>
+
+<span class="c1">// Split data into training (60%) and test (40%).</span>
+<span class="k">val</span> <span class="n">splits</span> <span class="k">=</span> <span class="n">data</span><span class="o">.</span><span class="n">randomSplit</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="mf">0.6</span><span class="o">,</span> <span class="mf">0.4</span><span class="o">),</span> <span class="n">seed</span> <span class="k">=</span> <span class="mi">11L</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">training</span> <span class="k">=</span> <span class="n">splits</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="n">cache</span><span class="o">()</span>
+<span class="k">val</span> <span class="n">test</span> <span class="k">=</span> <span class="n">splits</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
+
+<span class="c1">// Run training algorithm to build the model</span>
+<span class="k">val</span> <span class="n">numIterations</span> <span class="k">=</span> <span class="mi">100</span>
+<span class="k">val</span> <span class="n">model</span> <span class="k">=</span> <span class="nc">SVMWithSGD</span><span class="o">.</span><span class="n">train</span><span class="o">(</span><span class="n">training</span><span class="o">,</span> <span class="n">numIterations</span><span class="o">)</span>
+
+<span class="c1">// Clear the default threshold.</span>
+<span class="n">model</span><span class="o">.</span><span class="n">clearThreshold</span><span class="o">()</span>
+
+<span class="c1">// Compute raw scores on the test set.</span>
+<span class="k">val</span> <span class="n">scoreAndLabels</span> <span class="k">=</span> <span class="n">test</span><span class="o">.</span><span class="n">map</span> <span class="o">{</span> <span class="n">point</span> <span class="k">=&gt;</span>
+  <span class="k">val</span> <span class="n">score</span> <span class="k">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="o">(</span><span class="n">point</span><span class="o">.</span><span class="n">features</span><span class="o">)</span>
+  <span class="o">(</span><span class="n">score</span><span class="o">,</span> <span class="n">point</span><span class="o">.</span><span class="n">label</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="c1">// Get evaluation metrics.</span>
+<span class="k">val</span> <span class="n">metrics</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">BinaryClassificationMetrics</span><span class="o">(</span><span class="n">scoreAndLabels</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">auROC</span> <span class="k">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">areaUnderROC</span><span class="o">()</span>
+
+<span class="n">println</span><span class="o">(</span><span class="s">s&quot;Area under ROC = </span><span class="si">$auROC</span><span class="s">&quot;</span><span class="o">)</span>
+
+<span class="c1">// Save and load model</span>
+<span class="n">model</span><span class="o">.</span><span class="n">save</span><span class="o">(</span><span class="n">sc</span><span class="o">,</span> <span class="s">&quot;target/tmp/scalaSVMWithSGDModel&quot;</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">sameModel</span> <span class="k">=</span> <span class="nc">SVMModel</span><span class="o">.</span><span class="n">load</span><span class="o">(</span><span class="n">sc</span><span class="o">,</span> <span class="s">&quot;target/tmp/scalaSVMWithSGDModel&quot;</span><span class="o">)</span>
+</pre></div>
+                <div><small>请在 Spark repo 查看完整的示例代码： "examples/src/main/scala/org/apache/spark/examples/mllib/SVMWithSGDExample.scala"</small></div>
+
+                <p>默认情况下 <code>SVMWithSGD.train()</code> 方法执行 L2 正则化,并将正则化参数设置1.0.
+                    如果我们要配置此算法, 则可以通过直接创建新对象并调用setter方法来进一步自定义
+                    <code>SVMWithSGD</code>。 所有其他的 <code>spark.mllib</code> 算法也以这种方式支持自定义。
+                    例如, 以下正则化参数设置为0.1的SVM的L1正则化变体，并运行训练算法200次迭代。</p>
+
+                <figure class="highlight"><pre><code class="language-scala" data-lang="scala"><span></span><span class="k">import</span> <span class="nn">org.apache.spark.mllib.optimization.L1Updater</span>
+
+<span class="k">val</span> <span class="n">svmAlg</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SVMWithSGD</span><span class="o">()</span>
+<span class="n">svmAlg</span><span class="o">.</span><span class="n">optimizer</span>
+  <span class="o">.</span><span class="n">setNumIterations</span><span class="o">(</span><span class="mi">200</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setRegParam</span><span class="o">(</span><span class="mf">0.1</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setUpdater</span><span class="o">(</span><span class="k">new</span> <span class="n">L1Updater</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">modelL1</span> <span class="k">=</span> <span class="n">svmAlg</span><span class="o">.</span><span class="n">run</span><span class="o">(</span><span class="n">training</span><span class="o">)</span></code></pre></figure>
+
+            </div>
+
+            <div data-lang="java">
+                <p>All of MLlib&#8217;s methods use Java-friendly types, so you can import and call them there the same
+                    way you do in Scala. The only caveat is that the methods take Scala RDD objects, while the
+                    Spark Java API uses a separate <code>JavaRDD</code> class. You can convert a Java RDD to a Scala one by
+                    calling <code>.rdd()</code> on your <code>JavaRDD</code> object. A self-contained application example
+                    that is equivalent to the provided example in Scala is given below:</p>
+
+                <p>Refer to the <a href="api/java/org/apache/spark/mllib/classification/SVMWithSGD.html"><code>SVMWithSGD</code> Java docs</a> and <a href="api/java/org/apache/spark/mllib/classification/SVMModel.html"><code>SVMModel</code> Java docs</a> for details on the API.</p>
+
+                <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scala.Tuple2</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.spark.api.java.JavaRDD</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.mllib.classification.SVMModel</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.mllib.classification.SVMWithSGD</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.mllib.evaluation.BinaryClassificationMetrics</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.mllib.regression.LabeledPoint</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.mllib.util.MLUtils</span><span class="o">;</span>
+
+<span class="n">String</span> <span class="n">path</span> <span class="o">=</span> <span class="s">&quot;data/mllib/sample_libsvm_data.txt&quot;</span><span class="o">;</span>
+<span class="n">JavaRDD</span><span class="o">&lt;</span><span class="n">LabeledPoint</span><span class="o">&gt;</span> <span class="n">data</span> <span class="o">=</span> <span class="n">MLUtils</span><span class="o">.</span><span class="na">loadLibSVMFile</span><span class="o">(</span><span class="n">sc</span><span class="o">,</span> <span class="n">path</span><span class="o">).</span><span class="na">toJavaRDD</span><span class="o">();</span>
+
+<span class="c1">// Split initial RDD into two... [60% training data, 40% testing data].</span>
+<span class="n">JavaRDD</span><span class="o">&lt;</span><span class="n">LabeledPoint</span><span class="o">&gt;</span> <span class="n">training</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="na">sample</span><span class="o">(</span><span class="kc">false</span><span class="o">,</span> <span class="mf">0.6</span><span class="o">,</span> <span class="mi">11L</span><span class="o">);</span>
+<span class="n">training</span><span class="o">.</span><span class="na">cache</span><span class="o">();</span>
+<span class="n">JavaRDD</span><span class="o">&lt;</span><span class="n">LabeledPoint</span><span class="o">&gt;</span> <span class="n">test</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="na">subtract</span><span class="o">(</span><span class="n">training</span><span class="o">);</span>
+
+<span class="c1">// Run training algorithm to build the model.</span>
+<span class="kt">int</span> <span class="n">numIterations</span> <span class="o">=</span> <span class="mi">100</span><span class="o">;</span>
+<span class="n">SVMModel</span> <span class="n">model</span> <span class="o">=</span> <span class="n">SVMWithSGD</span><span class="o">.</span><span class="na">train</span><span class="o">(</span><span class="n">training</span><span class="o">.</span><span class="na">rdd</span><span class="o">(),</span> <span class="n">numIterations</span><span class="o">);</span>
+
+<span class="c1">// Clear the default threshold.</span>
+<span class="n">model</span><span class="o">.</span><span class="na">clearThreshold</span><span class="o">();</span>
+
+<span class="c1">// Compute raw scores on the test set.</span>
+<span class="n">JavaRDD</span><span class="o">&lt;</span><span class="n">Tuple2</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;&gt;</span> <span class="n">scoreAndLabels</span> <span class="o">=</span> <span class="n">test</span><span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">p</span> <span class="o">-&gt;</span>
+  <span class="k">new</span> <span class="n">Tuple2</span><span class="o">&lt;&gt;(</span><span class="n">model</span><span class="o">.</span><span class="na">predict</span><span class="o">(</span><span class="n">p</span><span class="o">.</span><span class="na">features</span><span class="o">()),</span> <span class="n">p</span><span class="o">.</span><span class="na">label</span><span class="o">()));</span>
+
+<span class="c1">// Get evaluation metrics.</span>
+<span class="n">BinaryClassificationMetrics</span> <span class="n">metrics</span> <span class="o">=</span>
+  <span class="k">new</span> <span class="n">BinaryClassificationMetrics</span><span class="o">(</span><span class="n">JavaRDD</span><span class="o">.</span><span class="na">toRDD</span><span class="o">(</span><span class="n">scoreAndLabels</span><span class="o">));</span>
+<span class="kt">double</span> <span class="n">auROC</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="na">areaUnderROC</span><span class="o">();</span>
+
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Area under ROC = &quot;</span> <span class="o">+</span> <span class="n">auROC</span><span class="o">);</span>
+
+<span class="c1">// Save and load model</span>
+<span class="n">model</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">sc</span><span class="o">,</span> <span class="s">&quot;target/tmp/javaSVMWithSGDModel&quot;</span><span class="o">);</span>
+<span class="n">SVMModel</span> <span class="n">sameModel</span> <span class="o">=</span> <span class="n">SVMModel</span><span class="o">.</span><span class="na">load</span><span class="o">(</span><span class="n">sc</span><span class="o">,</span> <span class="s">&quot;target/tmp/javaSVMWithSGDModel&quot;</span><span class="o">);</span>
+</pre></div>
+                <div><small>Find full example code at "examples/src/main/java/org/apache/spark/examples/mllib/JavaSVMWithSGDExample.java" in the Spark repo.</small></div>
+
+                <p>The <code>SVMWithSGD.train()</code> method by default performs L2 regularization with the
+                    regularization parameter set to 1.0. If we want to configure this algorithm, we
+                    can customize <code>SVMWithSGD</code> further by creating a new object directly and
+                    calling setter methods. All other <code>spark.mllib</code> algorithms support customization in
+                    this way as well. For example, the following code produces an L1 regularized
+                    variant of SVMs with regularization parameter set to 0.1, and runs the training
+                    algorithm for 200 iterations.</p>
+
+                <figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">import</span> <span class="nn">org.apache.spark.mllib.optimization.L1Updater</span><span class="o">;</span>
+
+<span class="n">SVMWithSGD</span> <span class="n">svmAlg</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SVMWithSGD</span><span class="o">();</span>
+<span class="n">svmAlg</span><span class="o">.</span><span class="na">optimizer</span><span class="o">()</span>
+  <span class="o">.</span><span class="na">setNumIterations</span><span class="o">(</span><span class="mi">200</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">setRegParam</span><span class="o">(</span><span class="mf">0.1</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">setUpdater</span><span class="o">(</span><span class="k">new</span> <span class="n">L1Updater</span><span class="o">());</span>
+<span class="n">SVMModel</span> <span class="n">modelL1</span> <span class="o">=</span> <span class="n">svmAlg</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">training</span><span class="o">.</span><span class="na">rdd</span><span class="o">());</span></code></pre></figure>
+
+                <p>In order to run the above application, follow the instructions
+                    provided in the <a href="quick-start.html#self-contained-applications">Self-Contained
+                        Applications</a> section of the Spark
+                    quick-start guide. Be sure to also include <em>spark-mllib</em> to your build file as
+                    a dependency.</p>
+            </div>
+
+            <div data-lang="python">
+                <p>The following example shows how to load a sample dataset, build SVM model,
+                    and make predictions with the resulting model to compute the training error.</p>
+
+                <p>Refer to the <a href="api/python/pyspark.mllib.html#pyspark.mllib.classification.SVMWithSGD"><code>SVMWithSGD</code> Python docs</a> and <a href="api/python/pyspark.mllib.html#pyspark.mllib.classification.SVMModel"><code>SVMModel</code> Python docs</a> for more details on the API.</p>
+
+                <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.mllib.classification</span> <span class="kn">import</span> <span class="n">SVMWithSGD</span><span class="p">,</span> <span class="n">SVMModel</span>
+<span class="kn">from</span> <span class="nn">pyspark.mllib.regression</span> <span class="kn">import</span> <span class="n">LabeledPoint</span>
+
+<span class="c1"># Load and parse the data</span>
+<span class="k">def</span> <span class="nf">parsePoint</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">LabeledPoint</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="p">(</span><span class="s2">&quot;data/mllib/sample_svm_data.txt&quot;</span><span class="p">)</span>
+<span class="n">parsedData</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">parsePoint</span><span class="p">)</span>
+
+<span class="c1"># Build the model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">SVMWithSGD</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">parsedData</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># Evaluating the model on training data</span>
+<span class="n">labelsAndPreds</span> <span class="o">=</span> <span class="n">parsedData</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">features</span><span class="p">)))</span>
+<span class="n">trainErr</span> <span class="o">=</span> <span class="n">labelsAndPreds</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">lp</span><span class="p">:</span> <span class="n">lp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">lp</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">parsedData</span><span class="o">.</span><span class="n">count</span><span class="p">())</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Training Error = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">trainErr</span><span class="p">))</span>
+
+<span class="c1"># Save and load model</span>
+<span class="n">model</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="s2">&quot;target/tmp/pythonSVMWithSGDModel&quot;</span><span class="p">)</span>
+<span class="n">sameModel</span> <span class="o">=</span> <span class="n">SVMModel</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="s2">&quot;target/tmp/pythonSVMWithSGDModel&quot;</span><span class="p">)</span>
+</pre></div>
+                <div><small>Find full example code at "examples/src/main/python/mllib/svm_with_sgd_example.py" in the Spark repo.</small></div>
+            </div>
+        </div>
+
+        <h3 id="logistic-regression">逻辑回归</h3>
+
+        <p><a href="http://en.wikipedia.org/wiki/Logistic_regression">逻辑回归</a> 被广泛的用于解决二分类问题
+            。就像上面的公式描述的一样，他是一个线性模型 <code>$\eqref{eq:regPrimal}$</code>,
+            下面就是逻辑回归的损失函数:
+            <code>\[
+                L(\wv;\x,y) :=  \log(1+\exp( -y \wv^T \x)).
+                \]</code></p>
+
+        <p>对于二分类问题, 该算法会输出一个二分类回归模型。
+            给定一个新的数据点 $\x$, 该模型会应用逻辑回归函数进行预测。
+            <code>\[
+                \mathrm{f}(z) = \frac{1}{1 + e^{-z}}
+                \]</code>
+            在这里 $z = \wv^T \x$.
+            如果 $\mathrm{f}(\wv^T x) &gt; 0.5$, 输出结果是正类, 否则是负类，
+            尽管与线性 SVM 不同, 逻辑回归的原始输出 $\mathrm{f}(z)$, 具有概率性解释。 (即：
+             $\x$ 是正类的概率).</p>
+
+        <p>二元逻辑回归可以被应用于
+            <a href="http://en.wikipedia.org/wiki/Multinomial_logistic_regression">多项式逻辑回归</a> 去训练和预测多分类问题。
+            例如, 对于 $K$ 可能的结果, 可以选择其中的一个作为 &#8220;pivot&#8221;, 剩余的 $K - 1$ 结果 分别和 pivot 进行回归。
+            在 <code>spark.mllib</code>中， 第一个类 $0$ 被选择作为 &#8220;pivot&#8221; 类.
+            有关参考，请参考
+            <a href="http://statweb.stanford.edu/~tibs/ElemStatLearn/">The Elements of Statistical Learning</a> 的第4.4节。
+           下面是
+            <a href="http://www.slideshare.net/dbtsai/2014-0620-mlor-36132297">详细的数学推导</a>。</p>
+
+        <p>对于多分类问题, 该算法将输出一个多项式逻辑回归模型,
+            其中包含针对第一类进行回归的$K - 1$ 个二进制逻辑回归模型。 给定一个新的数据点，将运行$K - 1$ 模型，并且将选择概率最大的类别作为预测类别。</p>
+
+        <p>我们实现了两种用于解决逻辑回归的算法: 小批量梯度下降和L-BFGS。
+            我们建议在小批量梯度下降时使用L-BFGS，以加快收敛速度。
+        </p>
+
+        <p><strong>示例</strong></p>
+
+        <div class="codetabs">
+
+            <div data-lang="scala">
+                <p>下面的代码说明了如何加载数据集, 将它拆分为训练集和测试集, 以及如何使用
+                    <a href="api/scala/index.html#org.apache.spark.mllib.classification.LogisticRegressionWithLBFGS">LogisticRegressionWithLBFGS</a>
+                    去拟合逻辑回归模型。
+                    然后根据测试数据集评估模型并将其保存到磁盘。</p>
+
+                <p>参考 <a href="api/scala/index.html#org.apache.spark.mllib.classification.LogisticRegressionWithLBFGS"><code>LogisticRegressionWithLBFGS</code> Scala 文档</a> 和 <a href="api/scala/index.html#org.apache.spark.mllib.classification.LogisticRegressionModel"><code>LogisticRegressionModel</code> Scala 文档</a>。</p>
+
+                <div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">org.apache.spark.mllib.classification.</span><span class="o">{</span><span class="nc">LogisticRegressionModel</span><span class="o">,</span> <span class="nc">LogisticRegressionWithLBFGS</span><span class="o">}</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.mllib.evaluation.MulticlassMetrics</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.mllib.regression.LabeledPoint</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.mllib.util.MLUtils</span>
+
+<span class="c1">// Load training data in LIBSVM format.</span>
+<span class="k">val</span> <span class="n">data</span> <span class="k">=</span> <span class="nc">MLUtils</span><span class="o">.</span><span class="n">loadLibSVMFile</span><span class="o">(</span><span class="n">sc</span><span class="o">,</span> <span class="s">&quot;data/mllib/sample_libsvm_data.txt&quot;</span><span class="o">)</span>
+
+<span class="c1">// Split data into training (60%) and test (40%).</span>
+<span class="k">val</span> <span class="n">splits</span> <span class="k">=</span> <span class="n">data</span><span class="o">.</span><span class="n">randomSplit</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="mf">0.6</span><span class="o">,</span> <span class="mf">0.4</span><span class="o">),</span> <span class="n">seed</span> <span class="k">=</span> <span class="mi">11L</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">training</span> <span class="k">=</span> <span class="n">splits</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="n">cache</span><span class="o">()</span>
+<span class="k">val</span> <span class="n">test</span> <span class="k">=</span> <span class="n">splits</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
+
+<span class="c1">// Run training algorithm to build the model</span>
+<span class="k">val</span> <span class="n">model</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">LogisticRegressionWithLBFGS</span><span class="o">()</span>
+  <span class="o">.</span><span class="n">setNumClasses</span><span class="o">(</span><span class="mi">10</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">run</span><span class="o">(</span><span class="n">training</span><span class="o">)</span>
+
+<span class="c1">// Compute raw scores on the test set.</span>
+<span class="k">val</span> <span class="n">predictionAndLabels</span> <span class="k">=</span> <span class="n">test</span><span class="o">.</span><span class="n">map</span> <span class="o">{</span> <span class="k">case</span> <span class="nc">LabeledPoint</span><span class="o">(</span><span class="n">label</span><span class="o">,</span> <span class="n">features</span><span class="o">)</span> <span class="k">=&gt;</span>
+  <span class="k">val</span> <span class="n">prediction</span> <span class="k">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="o">(</span><span class="n">features</span><span class="o">)</span>
+  <span class="o">(</span><span class="n">prediction</span><span class="o">,</span> <span class="n">label</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="c1">// Get evaluation metrics.</span>
+<span class="k">val</span> <span class="n">metrics</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">MulticlassMetrics</span><span class="o">(</span><span class="n">predictionAndLabels</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">accuracy</span> <span class="k">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">accuracy</span>
+<span class="n">println</span><span class="o">(</span><span class="s">s&quot;Accuracy = </span><span class="si">$accuracy</span><span class="s">&quot;</span><span class="o">)</span>
+
+<span class="c1">// Save and load model</span>
+<span class="n">model</span><span class="o">.</span><span class="n">save</span><span class="o">(</span><span class="n">sc</span><span class="o">,</span> <span class="s">&quot;target/tmp/scalaLogisticRegressionWithLBFGSModel&quot;</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">sameModel</span> <span class="k">=</span> <span class="nc">LogisticRegressionModel</span><span class="o">.</span><span class="n">load</span><span class="o">(</span><span class="n">sc</span><span class="o">,</span>
+  <span class="s">&quot;target/tmp/scalaLogisticRegressionWithLBFGSModel&quot;</span><span class="o">)</span>
+</pre></div>
+                <div><small>Find full example code at "examples/src/main/scala/org/apache/spark/examples/mllib/LogisticRegressionWithLBFGSExample.scala" in the Spark repo.</small></div>
+
+            </div>
+
+            <div data-lang="java">
+                <p>The following code illustrates how to load a sample multiclass dataset, split it into train and
+                    test, and use
+                    <a href="api/java/org/apache/spark/mllib/classification/LogisticRegressionWithLBFGS.html">LogisticRegressionWithLBFGS</a>
+                    to fit a logistic regression model.
+                    Then the model is evaluated against the test dataset and saved to disk.</p>
+
+                <p>Refer to the <a href="api/java/org/apache/spark/mllib/classification/LogisticRegressionWithLBFGS.html"><code>LogisticRegressionWithLBFGS</code> Java docs</a> and <a href="api/java/org/apache/spark/mllib/classification/LogisticRegressionModel.html"><code>LogisticRegressionModel</code> Java docs</a> for details on the API.</p>
+
+                <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scala.Tuple2</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.spark.api.java.JavaPairRDD</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.api.java.JavaRDD</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.mllib.classification.LogisticRegressionModel</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.mllib.classification.LogisticRegressionWithLBFGS</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.mllib.evaluation.MulticlassMetrics</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.mllib.regression.LabeledPoint</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.mllib.util.MLUtils</span><span class="o">;</span>
+
+<span class="n">String</span> <span class="n">path</span> <span class="o">=</span> <span class="s">&quot;data/mllib/sample_libsvm_data.txt&quot;</span><span class="o">;</span>
+<span class="n">JavaRDD</span><span class="o">&lt;</span><span class="n">LabeledPoint</span><span class="o">&gt;</span> <span class="n">data</span> <span class="o">=</span> <span class="n">MLUtils</span><span class="o">.</span><span class="na">loadLibSVMFile</span><span class="o">(</span><span class="n">sc</span><span class="o">,</span> <span class="n">path</span><span class="o">).</span><span class="na">toJavaRDD</span><span class="o">();</span>
+
+<span class="c1">// Split initial RDD into two... [60% training data, 40% testing data].</span>
+<span class="n">JavaRDD</span><span class="o">&lt;</span><span class="n">LabeledPoint</span><span class="o">&gt;[]</span> <span class="n">splits</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="na">randomSplit</span><span class="o">(</span><span class="k">new</span> <span class="kt">double</span><span class="o">[]</span> <span class="o">{</span><span class="mf">0.6</span><span class="o">,</span> <span class="mf">0.4</span><span class="o">},</span> <span class="mi">11L</span><span class="o">);</span>
+<span class="n">JavaRDD</span><span class="o">&lt;</span><span class="n">LabeledPoint</span><span class="o">&gt;</span> <span class="n">training</span> <span class="o">=</span> <span class="n">splits</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="na">cache</span><span class="o">();</span>
+<span class="n">JavaRDD</span><span class="o">&lt;</span><span class="n">LabeledPoint</span><span class="o">&gt;</span> <span class="n">test</span> <span class="o">=</span> <span class="n">splits</span><span class="o">[</span><span class="mi">1</span><span class="o">];</span>
+
+<span class="c1">// Run training algorithm to build the model.</span>
+<span class="n">LogisticRegressionModel</span> <span class="n">model</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LogisticRegressionWithLBFGS</span><span class="o">()</span>
+  <span class="o">.</span><span class="na">setNumClasses</span><span class="o">(</span><span class="mi">10</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">training</span><span class="o">.</span><span class="na">rdd</span><span class="o">());</span>
+
+<span class="c1">// Compute raw scores on the test set.</span>
+<span class="n">JavaPairRDD</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">predictionAndLabels</span> <span class="o">=</span> <span class="n">test</span><span class="o">.</span><span class="na">mapToPair</span><span class="o">(</span><span class="n">p</span> <span class="o">-&gt;</span>
+  <span class="k">new</span> <span class="n">Tuple2</span><span class="o">&lt;&gt;(</span><span class="n">model</span><span class="o">.</span><span class="na">predict</span><span class="o">(</span><span class="n">p</span><span class="o">.</span><span class="na">features</span><span class="o">()),</span> <span class="n">p</span><span class="o">.</span><span class="na">label</span><span class="o">()));</span>
+
+<span class="c1">// Get evaluation metrics.</span>
+<span class="n">MulticlassMetrics</span> <span class="n">metrics</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MulticlassMetrics</span><span class="o">(</span><span class="n">predictionAndLabels</span><span class="o">.</span><span class="na">rdd</span><span class="o">());</span>
+<span class="kt">double</span> <span class="n">accuracy</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="na">accuracy</span><span class="o">();</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Accuracy = &quot;</span> <span class="o">+</span> <span class="n">accuracy</span><span class="o">);</span>
+
+<span class="c1">// Save and load model</span>
+<span class="n">model</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">sc</span><span class="o">,</span> <span class="s">&quot;target/tmp/javaLogisticRegressionWithLBFGSModel&quot;</span><span class="o">);</span>
+<span class="n">LogisticRegressionModel</span> <span class="n">sameModel</span> <span class="o">=</span> <span class="n">LogisticRegressionModel</span><span class="o">.</span><span class="na">load</span><span class="o">(</span><span class="n">sc</span><span class="o">,</span>
+  <span class="s">&quot;target/tmp/javaLogisticRegressionWithLBFGSModel&quot;</span><span class="o">);</span>
+</pre></div>
+                <div><small>Find full example code at "examples/src/main/java/org/apache/spark/examples/mllib/JavaLogisticRegressionWithLBFGSExample.java" in the Spark repo.</small></div>
+            </div>
+
+            <div data-lang="python">
+                <p>The following example shows how to load a sample dataset, build Logistic Regression model,
+                    and make predictions with the resulting model to compute the training error.</p>
+
+                <p>Note that the Python API does not yet support multiclass classification and model save/load but
+                    will in the future.</p>
+
+                <p>Refer to the <a href="api/python/pyspark.mllib.html#pyspark.mllib.classification.LogisticRegressionWithLBFGS"><code>LogisticRegressionWithLBFGS</code> Python docs</a> and <a href="api/python/pyspark.mllib.html#pyspark.mllib.classification.LogisticRegressionModel"><code>LogisticRegressionModel</code> Python docs</a> for more details on the API.</p>
+
+                <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.mllib.classification</span> <span class="kn">import</span> <span class="n">LogisticRegressionWithLBFGS</span><span class="p">,</span> <span class="n">LogisticRegressionModel</span>
+<span class="kn">from</span> <span class="nn">pyspark.mllib.regression</span> <span class="kn">import</span> <span class="n">LabeledPoint</span>
+
+<span class="c1"># Load and parse the data</span>
+<span class="k">def</span> <span class="nf">parsePoint</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">LabeledPoint</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="p">(</span><span class="s2">&quot;data/mllib/sample_svm_data.txt&quot;</span><span class="p">)</span>
+<span class="n">parsedData</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">parsePoint</span><span class="p">)</span>
+
+<span class="c1"># Build the model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">LogisticRegressionWithLBFGS</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">parsedData</span><span class="p">)</span>
+
+<span class="c1"># Evaluating the model on training data</span>
+<span class="n">labelsAndPreds</span> <span class="o">=</span> <span class="n">parsedData</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">features</span><span class="p">)))</span>
+<span class="n">trainErr</span> <span class="o">=</span> <span class="n">labelsAndPreds</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">lp</span><span class="p">:</span> <span class="n">lp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">lp</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">parsedData</span><span class="o">.</span><span class="n">count</span><span class="p">())</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Training Error = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">trainErr</span><span class="p">))</span>
+
+<span class="c1"># Save and load model</span>
+<span class="n">model</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="s2">&quot;target/tmp/pythonLogisticRegressionWithLBFGSModel&quot;</span><span class="p">)</span>
+<span class="n">sameModel</span> <span class="o">=</span> <span class="n">LogisticRegressionModel</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span>
+                                         <span class="s2">&quot;target/tmp/pythonLogisticRegressionWithLBFGSModel&quot;</span><span class="p">)</span>
+</pre></div>
+                <div><small>Find full example code at "examples/src/main/python/mllib/logistic_regression_with_lbfgs_example.py" in the Spark repo.</small></div>
+            </div>
+        </div>
+
+        <h1 id="regression">Regression</h1>
+
+        <h3 id="linear-least-squares-lasso-and-ridge-regression">Linear least squares, Lasso, and ridge regression</h3>
+
+        <p>Linear least squares is the most common formulation for regression problems.
+            It is a linear method as described above in equation <code>$\eqref{eq:regPrimal}$</code>, with the loss
+            function in the formulation given by the squared loss:
+            <code>\[
+                L(\wv;\x,y) :=  \frac{1}{2} (\wv^T \x - y)^2.
+                \]</code></p>
+
+        <p>Various related regression methods are derived by using different types of regularization:
+            <a href="http://en.wikipedia.org/wiki/Ordinary_least_squares"><em>ordinary least squares</em></a> or
+            <a href="http://en.wikipedia.org/wiki/Linear_least_squares_(mathematics)"><em>linear least squares</em></a> uses
+            no regularization; <a href="http://en.wikipedia.org/wiki/Ridge_regression"><em>ridge regression</em></a> uses L2
+            regularization; and <a href="http://en.wikipedia.org/wiki/Lasso_(statistics)"><em>Lasso</em></a> uses L1
+            regularization.  For all of these models, the average loss or training error, $\frac{1}{n} \sum_{i=1}^n (\wv^T x_i - y_i)^2$, is
+            known as the <a href="http://en.wikipedia.org/wiki/Mean_squared_error">mean squared error</a>.</p>
+
+        <p><strong>Examples</strong></p>
+
+        <div class="codetabs">
+
+            <div data-lang="scala">
+                <p>The following example demonstrate how to load training data, parse it as an RDD of LabeledPoint.
+                    The example then uses LinearRegressionWithSGD to build a simple linear model to predict label
+                    values. We compute the mean squared error at the end to evaluate
+                    <a href="http://en.wikipedia.org/wiki/Goodness_of_fit">goodness of fit</a>.</p>
+
+                <p>Refer to the <a href="api/scala/index.html#org.apache.spark.mllib.regression.LinearRegressionWithSGD"><code>LinearRegressionWithSGD</code> Scala docs</a> and <a href="api/scala/index.html#org.apache.spark.mllib.regression.LinearRegressionModel"><code>LinearRegressionModel</code> Scala docs</a> for details on the API.</p>
+
+                <div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">org.apache.spark.mllib.linalg.Vectors</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.mllib.regression.LabeledPoint</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.mllib.regression.LinearRegressionModel</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.mllib.regression.LinearRegressionWithSGD</span>
+
+<span class="c1">// Load and parse the data</span>
+<span class="k">val</span> <span class="n">data</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&quot;data/mllib/ridge-data/lpsa.data&quot;</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">parsedData</span> <span class="k">=</span> <span class="n">data</span><span class="o">.</span><span class="n">map</span> <span class="o">{</span> <span class="n">line</span> <span class="k">=&gt;</span>
+  <span class="k">val</span> <span class="n">parts</span> <span class="k">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="sc">&#39;,&#39;</span><span class="o">)</span>
+  <span class="nc">LabeledPoint</span><span class="o">(</span><span class="n">parts</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="n">toDouble</span><span class="o">,</span> <span class="nc">Vectors</span><span class="o">.</span><span class="n">dense</span><span class="o">(</span><span class="n">parts</span><span class="o">(</span><span class="mi">1</span><span class="o">).</span><span class="n">split</span><span class="o">(</span><span class="sc">&#39; &#39;</span><span class="o">).</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">toDouble</span><span class="o">)))</span>
+<span class="o">}.</span><span class="n">cache</span><span class="o">()</span>
+
+<span class="c1">// Building the model</span>
+<span class="k">val</span> <span class="n">numIterations</span> <span class="k">=</span> <span class="mi">100</span>
+<span class="k">val</span> <span class="n">stepSize</span> <span class="k">=</span> <span class="mf">0.00000001</span>
+<span class="k">val</span> <span class="n">model</span> <span class="k">=</span> <span class="nc">LinearRegressionWithSGD</span><span class="o">.</span><span class="n">train</span><span class="o">(</span><span class="n">parsedData</span><span class="o">,</span> <span class="n">numIterations</span><span class="o">,</span> <span class="n">stepSize</span><span class="o">)</span>
+
+<span class="c1">// Evaluate model on training examples and compute training error</span>
+<span class="k">val</span> <span class="n">valuesAndPreds</span> <span class="k">=</span> <span class="n">parsedData</span><span class="o">.</span><span class="n">map</span> <span class="o">{</span> <span class="n">point</span> <span class="k">=&gt;</span>
+  <span class="k">val</span> <span class="n">prediction</span> <span class="k">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="o">(</span><span class="n">point</span><span class="o">.</span><span class="n">features</span><span class="o">)</span>
+  <span class="o">(</span><span class="n">point</span><span class="o">.</span><span class="n">label</span><span class="o">,</span> <span class="n">prediction</span><span class="o">)</span>
+<span class="o">}</span>
+<span class="k">val</span> <span class="nc">MSE</span> <span class="k">=</span> <span class="n">valuesAndPreds</span><span class="o">.</span><span class="n">map</span><span class="o">{</span> <span class="k">case</span><span class="o">(</span><span class="n">v</span><span class="o">,</span> <span class="n">p</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="o">((</span><span class="n">v</span> <span class="o">-</span> <span class="n">p</span><span class="o">),</span> <span class="mi">2</span><span class="o">)</span> <span class="o">}.</span><span class="n">mean</span><span class="o">()</span>
+<span class="n">println</span><span class="o">(</span><span class="s">s&quot;training Mean Squared Error </span><span class="si">$MSE</span><span class="s">&quot;</span><span class="o">)</span>
+
+<span class="c1">// Save and load model</span>
+<span class="n">model</span><span class="o">.</span><span class="n">save</span><span class="o">(</span><span class="n">sc</span><span class="o">,</span> <span class="s">&quot;target/tmp/scalaLinearRegressionWithSGDModel&quot;</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">sameModel</span> <span class="k">=</span> <span class="nc">LinearRegressionModel</span><span class="o">.</span><span class="n">load</span><span class="o">(</span><span class="n">sc</span><span class="o">,</span> <span class="s">&quot;target/tmp/scalaLinearRegressionWithSGDModel&quot;</span><span class="o">)</span>
+</pre></div>
+                <div><small>Find full example code at "examples/src/main/scala/org/apache/spark/examples/mllib/LinearRegressionWithSGDExample.scala" in the Spark repo.</small></div>
+
+                <p><a href="api/scala/index.html#org.apache.spark.mllib.regression.RidgeRegressionWithSGD"><code>RidgeRegressionWithSGD</code></a>
+                    and <a href="api/scala/index.html#org.apache.spark.mllib.regression.LassoWithSGD"><code>LassoWithSGD</code></a> can be used in a similar fashion as <code>LinearRegressionWithSGD</code>.</p>
+
+            </div>
+
+            <div data-lang="java">
+                <p>All of MLlib&#8217;s methods use Java-friendly types, so you can import and call them there the same
+                    way you do in Scala. The only caveat is that the methods take Scala RDD objects, while the
+                    Spark Java API uses a separate <code>JavaRDD</code> class. You can convert a Java RDD to a Scala one by
+                    calling <code>.rdd()</code> on your <code>JavaRDD</code> object. The corresponding Java example to
+                    the Scala snippet provided, is presented below:</p>
+
+                <p>Refer to the <a href="api/java/org/apache/spark/mllib/regression/LinearRegressionWithSGD.html"><code>LinearRegressionWithSGD</code> Java docs</a> and <a href="api/java/org/apache/spark/mllib/regression/LinearRegressionModel.html"><code>LinearRegressionModel</code> Java docs</a> for details on the API.</p>
+
+                <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scala.Tuple2</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.spark.api.java.JavaPairRDD</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.api.java.JavaRDD</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.mllib.linalg.Vectors</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.mllib.regression.LabeledPoint</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.mllib.regression.LinearRegressionModel</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.mllib.regression.LinearRegressionWithSGD</span><span class="o">;</span>
+
+<span class="c1">// Load and parse the data</span>
+<span class="n">String</span> <span class="n">path</span> <span class="o">=</span> <span class="s">&quot;data/mllib/ridge-data/lpsa.data&quot;</span><span class="o">;</span>
+<span class="n">JavaRDD</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">data</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="na">textFile</span><span class="o">(</span><span class="n">path</span><span class="o">);</span>
+<span class="n">JavaRDD</span><span class="o">&lt;</span><span class="n">LabeledPoint</span><span class="o">&gt;</span> <span class="n">parsedData</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">line</span> <span class="o">-&gt;</span> <span class="o">{</span>
+  <span class="n">String</span><span class="o">[]</span> <span class="n">parts</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">&quot;,&quot;</span><span class="o">);</span>
+  <span class="n">String</span><span class="o">[]</span> <span class="n">features</span> <span class="o">=</span> <span class="n">parts</span><span class="o">[</span><span class="mi">1</span><span class="o">].</span><span class="na">split</span><span class="o">(</span><span class="s">&quot; &quot;</span><span class="o">);</span>
+  <span class="kt">double</span><span class="o">[]</span> <span class="n">v</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">double</span><span class="o">[</span><span class="n">features</span><span class="o">.</span><span class="na">length</span><span class="o">];</span>
+  <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">features</span><span class="o">.</span><span class="na">length</span> <span class="o">-</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+    <span class="n">v</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">Double</span><span class="o">.</span><span class="na">parseDouble</span><span class="o">(</span><span class="n">features</span><span class="o">[</span><span class="n">i</span><span class="o">]);</span>
+  <span class="o">}</span>
+  <span class="k">return</span> <span class="k">new</span> <span class="n">LabeledPoint</span><span class="o">(</span><span class="n">Double</span><span class="o">.</span><span class="na">parseDouble</span><span class="o">(</span><span class="n">parts</span><span class="o">[</span><span class="mi">0</span><span class="o">]),</span> <span class="n">Vectors</span><span class="o">.</span><span class="na">dense</span><span class="o">(</span><span class="n">v</span><span class="o">));</span>
+<span class="o">});</span>
+<span class="n">parsedData</span><span class="o">.</span><span class="na">cache</span><span class="o">();</span>
+
+<span class="c1">// Building the model</span>
+<span class="kt">int</span> <span class="n">numIterations</span> <span class="o">=</span> <span class="mi">100</span><span class="o">;</span>
+<span class="kt">double</span> <span class="n">stepSize</span> <span class="o">=</span> <span class="mf">0.00000001</span><span class="o">;</span>
+<span class="n">LinearRegressionModel</span> <span class="n">model</span> <span class="o">=</span>
+  <span class="n">LinearRegressionWithSGD</span><span class="o">.</span><span class="na">train</span><span class="o">(</span><span class="n">JavaRDD</span><span class="o">.</span><span class="na">toRDD</span><span class="o">(</span><span class="n">parsedData</span><span class="o">),</span> <span class="n">numIterations</span><span class="o">,</span> <span class="n">stepSize</span><span class="o">);</span>
+
+<span class="c1">// Evaluate model on training examples and compute training error</span>
+<span class="n">JavaPairRDD</span><span class="o">&lt;</span><span class="n">Double</span><span class="o">,</span> <span class="n">Double</span><span class="o">&gt;</span> <span class="n">valuesAndPreds</span> <span class="o">=</span> <span class="n">parsedData</span><span class="o">.</span><span class="na">mapToPair</span><span class="o">(</span><span class="n">point</span> <span class="o">-&gt;</span>
+  <span class="k">new</span> <span class="n">Tuple2</span><span class="o">&lt;&gt;(</span><span class="n">model</span><span class="o">.</span><span class="na">predict</span><span class="o">(</span><span class="n">point</span><span class="o">.</span><span class="na">features</span><span class="o">()),</span> <span class="n">point</span><span class="o">.</span><span class="na">label</span><span class="o">()));</span>
+
+<span class="kt">double</span> <span class="n">MSE</span> <span class="o">=</span> <span class="n">valuesAndPreds</span><span class="o">.</span><span class="na">mapToDouble</span><span class="o">(</span><span class="n">pair</span> <span class="o">-&gt;</span> <span class="o">{</span>
+  <span class="kt">double</span> <span class="n">diff</span> <span class="o">=</span> <span class="n">pair</span><span class="o">.</span><span class="na">_1</span><span class="o">()</span> <span class="o">-</span> <span class="n">pair</span><span class="o">.</span><span class="na">_2</span><span class="o">();</span>
+  <span class="k">return</span> <span class="n">diff</span> <span class="o">*</span> <span class="n">diff</span><span class="o">;</span>
+<span class="o">}).</span><span class="na">mean</span><span class="o">();</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;training Mean Squared Error = &quot;</span> <span class="o">+</span> <span class="n">MSE</span><span class="o">);</span>
+
+<span class="c1">// Save and load model</span>
+<span class="n">model</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">sc</span><span class="o">.</span><span class="na">sc</span><span class="o">(),</span> <span class="s">&quot;target/tmp/javaLinearRegressionWithSGDModel&quot;</span><span class="o">);</span>
+<span class="n">LinearRegressionModel</span> <span class="n">sameModel</span> <span class="o">=</span> <span class="n">LinearRegressionModel</span><span class="o">.</span><span class="na">load</span><span class="o">(</span><span class="n">sc</span><span class="o">.</span><span class="na">sc</span><span class="o">(),</span>
+  <span class="s">&quot;target/tmp/javaLinearRegressionWithSGDModel&quot;</span><span class="o">);</span>
+</pre></div>
+                <div><small>Find full example code at "examples/src/main/java/org/apache/spark/examples/mllib/JavaLinearRegressionWithSGDExample.java" in the Spark repo.</small></div>
+            </div>
+
+            <div data-lang="python">
+                <p>The following example demonstrate how to load training data, parse it as an RDD of LabeledPoint.
+                    The example then uses LinearRegressionWithSGD to build a simple linear model to predict label
+                    values. We compute the mean squared error at the end to evaluate
+                    <a href="http://en.wikipedia.org/wiki/Goodness_of_fit">goodness of fit</a>.</p>
+
+                <p>Note that the Python API does not yet support model save/load but will in the future.</p>
+
+                <p>Refer to the <a href="api/python/pyspark.mllib.html#pyspark.mllib.regression.LinearRegressionWithSGD"><code>LinearRegressionWithSGD</code> Python docs</a> and <a href="api/python/pyspark.mllib.html#pyspark.mllib.regression.LinearRegressionModel"><code>LinearRegressionModel</code> Python docs</a> for more details on the API.</p>
+
+                <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.mllib.regression</span> <span class="kn">import</span> <span class="n">LabeledPoint</span><span class="p">,</span> <span class="n">LinearRegressionWithSGD</span><span class="p">,</span> <span class="n">LinearRegressionModel</span>
+
+<span class="c1"># Load and parse the data</span>
+<span class="k">def</span> <span class="nf">parsePoint</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">LabeledPoint</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="p">(</span><span class="s2">&quot;data/mllib/ridge-data/lpsa.data&quot;</span><span class="p">)</span>
+<span class="n">parsedData</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">parsePoint</span><span class="p">)</span>
+
+<span class="c1"># Build the model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">LinearRegressionWithSGD</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">parsedData</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mf">0.00000001</span><span class="p">)</span>
+
+<span class="c1"># Evaluate the model on training data</span>
+<span class="n">valuesAndPreds</span> <span class="o">=</span> <span class="n">parsedData</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">features</span><span class="p">)))</span>
+<span class="n">MSE</span> <span class="o">=</span> <span class="n">valuesAndPreds</span> \
+    <span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">vp</span><span class="p">:</span> <span class="p">(</span><span class="n">vp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">vp</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> \
+    <span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">valuesAndPreds</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Mean Squared Error = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">MSE</span><span class="p">))</span>
+
+<span class="c1"># Save and load model</span>
+<span class="n">model</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="s2">&quot;target/tmp/pythonLinearRegressionWithSGDModel&quot;</span><span class="p">)</span>
+<span class="n">sameModel</span> <span class="o">=</span> <span class="n">LinearRegressionModel</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="s2">&quot;target/tmp/pythonLinearRegressionWithSGDModel&quot;</span><span class="p">)</span>
+</pre></div>
+                <div><small>Find full example code at "examples/src/main/python/mllib/linear_regression_with_sgd_example.py" in the Spark repo.</small></div>
+            </div>
+        </div>
+
+        <p>In order to run the above application, follow the instructions
+            provided in the <a href="quick-start.html#self-contained-applications">Self-Contained Applications</a>
+            section of the Spark
+            quick-start guide. Be sure to also include <em>spark-mllib</em> to your build file as
+            a dependency.</p>
+
+        <h3 id="streaming-linear-regression">Streaming linear regression</h3>
+
+        <p>When data arrive in a streaming fashion, it is useful to fit regression models online,
+            updating the parameters of the model as new data arrives. <code>spark.mllib</code> currently supports
+            streaming linear regression using ordinary least squares. The fitting is similar
+            to that performed offline, except fitting occurs on each batch of data, so that
+            the model continually updates to reflect the data from the stream.</p>
+
+        <p><strong>Examples</strong></p>
+
+        <p>The following example demonstrates how to load training and testing data from two different
+            input streams of text files, parse the streams as labeled points, fit a linear regression model
+            online to the first stream, and make predictions on the second stream.</p>
+
+        <div class="codetabs">
+
+            <div data-lang="scala">
+
+                <p>First, we import the necessary classes for parsing our input data and creating the model.</p>
+
+                <p>Then we make input streams for training and testing data. We assume a StreamingContext <code>ssc</code>
+                    has already been created, see <a href="streaming-programming-guide.html#initializing">Spark Streaming Programming Guide</a>
+                    for more info. For this example, we use labeled points in training and testing streams,
+                    but in practice you will likely want to use unlabeled vectors for test data.</p>
+
+                <p>We create our model by initializing the weights to zero and register the streams for training and
+                    testing then start the job. Printing predictions alongside true labels lets us easily see the
+                    result.</p>
+
+                <p>Finally, we can save text files with data to the training or testing folders.
+                    Each line should be a data point formatted as <code>(y,[x1,x2,x3])</code> where <code>y</code> is the label
+                    and <code>x1,x2,x3</code> are the features. Anytime a text file is placed in <code>args(0)</code>
+                    the model will update. Anytime a text file is placed in <code>args(1)</code> you will see predictions.
+                    As you feed more data to the training directory, the predictions
+                    will get better!</p>
+
+                <p>Here is a complete example:</p>
+                <div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">org.apache.spark.mllib.linalg.Vectors</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.mllib.regression.LabeledPoint</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.mllib.regression.StreamingLinearRegressionWithSGD</span>
+
+<span class="k">val</span> <span class="n">trainingData</span> <span class="k">=</span> <span class="n">ssc</span><span class="o">.</span><span class="n">textFileStream</span><span class="o">(</span><span class="n">args</span><span class="o">(</span><span class="mi">0</span><span class="o">)).</span><span class="n">map</span><span class="o">(</span><span class="nc">LabeledPoint</span><span class="o">.</span><span class="n">parse</span><span class="o">).</span><span class="n">cache</span><span class="o">()</span>
+<span class="k">val</span> <span class="n">testData</span> <span class="k">=</span> <span class="n">ssc</span><span class="o">.</span><span class="n">textFileStream</span><span class="o">(</span><span class="n">args</span><span class="o">(</span><span class="mi">1</span><span class="o">)).</span><span class="n">map</span><span class="o">(</span><span class="nc">LabeledPoint</span><span class="o">.</span><span class="n">parse</span><span class="o">)</span>
+
+<span class="k">val</span> <span class="n">numFeatures</span> <span class="k">=</span> <span class="mi">3</span>
+<span class="k">val</span> <span class="n">model</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StreamingLinearRegressionWithSGD</span><span class="o">()</span>
+  <span class="o">.</span><span class="n">setInitialWeights</span><span class="o">(</span><span class="nc">Vectors</span><span class="o">.</span><span class="n">zeros</span><span class="o">(</span><span class="n">numFeatures</span><span class="o">))</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">trainOn</span><span class="o">(</span><span class="n">trainingData</span><span class="o">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">predictOnValues</span><span class="o">(</span><span class="n">testData</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">lp</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">lp</span><span class="o">.</span><span class="n">label</span><span class="o">,</span> <span class="n">lp</span><span class="o">.</span><span class="n">features</span><span class="o">))).</span><span class="n">print</span><span class="o">()</span>
+
+<span class="n">ssc</span><span class="o">.</span><span class="n">start</span><span class="o">()</span>
+<span class="n">ssc</span><span class="o">.</span><span class="n">awaitTermination</span><span class="o">()</span>
+</pre></div>
+                <div><small>Find full example code at "examples/src/main/scala/org/apache/spark/examples/mllib/StreamingLinearRegressionExample.scala" in the Spark repo.</small></div>
+
+            </div>
+
+            <div data-lang="python">
+
+                <p>First, we import the necessary classes for parsing our input data and creating the model.</p>
+
+                <p>Then we make input streams for training and testing data. We assume a StreamingContext <code>ssc</code>
+                    has already been created, see <a href="streaming-programming-guide.html#initializing">Spark Streaming Programming Guide</a>
+                    for more info. For this example, we use labeled points in training and testing streams,
+                    but in practice you will likely want to use unlabeled vectors for test data.</p>
+
+                <p>We create our model by initializing the weights to 0.</p>
+
+                <p>Now we register the streams for training and testing and start the job.</p>
+
+                <p>We can now save text files with data to the training or testing folders.
+                    Each line should be a data point formatted as <code>(y,[x1,x2,x3])</code> where <code>y</code> is the label
+                    and <code>x1,x2,x3</code> are the features. Anytime a text file is placed in <code>sys.argv[1]</code>
+                    the model will update. Anytime a text file is placed in <code>sys.argv[2]</code> you will see predictions.
+                    As you feed more data to the training directory, the predictions
+                    will get better!</p>
+
+                <p>Here a complete example:</p>
+                <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">pyspark.mllib.linalg</span> <span class="kn">import</span> <span class="n">Vectors</span>
+<span class="kn">from</span> <span class="nn">pyspark.mllib.regression</span> <span class="kn">import</span> <span class="n">LabeledPoint</span>
+<span class="kn">from</span> <span class="nn">pyspark.mllib.regression</span> <span class="kn">import</span> <span class="n">StreamingLinearRegressionWithSGD</span>
+
+<span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">lp</span><span class="p">):</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">lp</span><span class="p">[</span><span class="n">lp</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span> <span class="n">lp</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)])</span>
+    <span class="n">vec</span> <span class="o">=</span> <span class="n">Vectors</span><span class="o">.</span><span class="n">dense</span><span class="p">(</span><span class="n">lp</span><span class="p">[</span><span class="n">lp</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span> <span class="n">lp</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;]&#39;</span><span class="p">)]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">LabeledPoint</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">vec</span><span class="p">)</span>
+
+<span class="n">trainingData</span> <span class="o">=</span> <span class="n">ssc</span><span class="o">.</span><span class="n">textFileStream</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">parse</span><span class="p">)</span><span class="o">.</span><span class="n">cache</span><span class="p">()</span>
+<span class="n">testData</span> <span class="o">=</span> <span class="n">ssc</span><span class="o">.</span><span class="n">textFileStream</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">parse</span><span class="p">)</span>
+
+<span class="n">numFeatures</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">StreamingLinearRegressionWithSGD</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">setInitialWeights</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">trainOn</span><span class="p">(</span><span class="n">trainingData</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">predictOnValues</span><span class="p">(</span><span class="n">testData</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">lp</span><span class="p">:</span> <span class="p">(</span><span class="n">lp</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">lp</span><span class="o">.</span><span class="n">features</span><span class="p">))))</span>
+
+<span class="n">ssc</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="n">ssc</span><span class="o">.</span><span class="n">awaitTermination</span><span class="p">()</span>
+</pre></div>
+                <div><small>Find full example code at "examples/src/main/python/mllib/streaming_linear_regression_example.py" in the Spark repo.</small></div>
+
+            </div>
+
+        </div>
+
+        <h1 id="implementation-developer">Implementation (developer)</h1>
+
+        <p>Behind the scene, <code>spark.mllib</code> implements a simple distributed version of stochastic gradient descent
+            (SGD), building on the underlying gradient descent primitive (as described in the <a href="mllib-optimization.html">optimization</a> section).  All provided algorithms take as input a
+            regularization parameter (<code>regParam</code>) along with various parameters associated with stochastic
+            gradient descent (<code>stepSize</code>, <code>numIterations</code>, <code>miniBatchFraction</code>).  For each of them, we support
+            all three possible regularizations (none, L1 or L2).</p>
+
+        <p>For Logistic Regression, <a href="api/scala/index.html#org.apache.spark.mllib.optimization.LBFGS">L-BFGS</a>
+            version is implemented under <a href="api/scala/index.html#org.apache.spark.mllib.classification.LogisticRegressionWithLBFGS">LogisticRegressionWithLBFGS</a>, and this
+            version supports both binary and multinomial Logistic Regression while SGD version only supports
+            binary Logistic Regression. However, L-BFGS version doesn&#8217;t support L1 regularization but SGD one
+            supports L1 regularization. When L1 regularization is not required, L-BFGS version is strongly
+            recommended since it converges faster and more accurately compared to SGD by approximating the
+            inverse Hessian matrix using quasi-Newton method.</p>
+
+        <p>Algorithms are all implemented in Scala:</p>
+
+        <ul>
+            <li><a href="api/scala/index.html#org.apache.spark.mllib.classification.SVMWithSGD">SVMWithSGD</a></li>
+            <li><a href="api/scala/index.html#org.apache.spark.mllib.classification.LogisticRegressionWithLBFGS">LogisticRegressionWithLBFGS</a></li>
+            <li><a href="api/scala/index.html#org.apache.spark.mllib.classification.LogisticRegressionWithSGD">LogisticRegressionWithSGD</a></li>
+            <li><a href="api/scala/index.html#org.apache.spark.mllib.regression.LinearRegressionWithSGD">LinearRegressionWithSGD</a></li>
+            <li><a href="api/scala/index.html#org.apache.spark.mllib.regression.RidgeRegressionWithSGD">RidgeRegressionWithSGD</a></li>
+            <li><a href="api/scala/index.html#org.apache.spark.mllib.regression.LassoWithSGD">LassoWithSGD</a></li>
+        </ul>
+
+
+
+    </div>
+
+    <!-- /container -->
+</div>
+
+<script src="js/vendor/jquery-1.8.0.min.js"></script>
+<script src="js/vendor/bootstrap.min.js"></script>
+<script src="js/vendor/anchor.min.js"></script>
+<script src="js/main.js"></script>
+
+<!-- MathJax Section -->
+<script type="text/x-mathjax-config">
+            MathJax.Hub.Config({
+                TeX: { equationNumbers: { autoNumber: "AMS" } }
+            });
+        </script>
+<script>
+    // Note that we load MathJax this way to work with local file (file://), HTTP and HTTPS.
+    // We could use "//cdn.mathjax...", but that won't support "file://".
+    (function(d, script) {
+        script = d.createElement('script');
+        script.type = 'text/javascript';
+        script.async = true;
+        script.onload = function(){
+            MathJax.Hub.Config({
+                tex2jax: {
+                    inlineMath: [ ["$", "$"], ["\\\\(","\\\\)"] ],
+                    displayMath: [ ["$$","$$"], ["\\[", "\\]"] ],
+                    processEscapes: true,
+                    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+                }
+            });
+        };
+        script.src = ('https:' == document.location.protocol ? 'https://' : 'http://') +
+            'cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js' +
+            '?config=TeX-AMS-MML_HTMLorMML';
+        d.getElementsByTagName('head')[0].appendChild(script);
+    }(document));
+</script>
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Overview - Spark 3.1.2 Documentation</title>
+
+    <meta name="description" content="Apache Spark 3.0.1 documentation homepage">
+
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+    </style>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <script src="js/vendor/modernizr-2.6.1-respond-1.1.0.min.js"></script>
+
+    <link rel="stylesheet" href="css/pygments-default.css">
+
+
+    <!-- Google analytics script -->
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-32518208-2']);
+        _gaq.push(['_trackPageview']);
+
+        (function () {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+<!--[if lt IE 7]>
+<p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser
+    today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better
+    experience this site.</p>
+<![endif]-->
+
+<!-- This code is taken from http://twitter.github.com/bootstrap/examples/hero.html -->
+
+<div class="navbar navbar-fixed-top" id="topbar">
+    <div class="navbar-inner">
+        <div class="container">
+            <div class="brand"><a href="index.html">
+                <img src="img/spark-logo-hd.png" style="height:50px;"/></a><span class="version">3.1.2</span>
+            </div>
+            <ul class="nav">
+                <!--TODO(andyk): Add class="active" attribute to li some how.-->
+                <li><a href="index.html">概述</a></li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">编程指南<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="quick-start.html">快速入门</a></li>
+                        <li><a href="rdd-programming-guide.html">RDDs, Accumulators, Broadcasts Vars</a></li>
+                        <li><a href="sql-programming-guide.html">SQL, DataFrames, and Datasets</a></li>
+                        <li><a href="structured-streaming-programming-guide.html">Structured Streaming</a></li>
+                        <li><a href="streaming-programming-guide.html">Spark Streaming (DStreams)</a></li>
+                        <li><a href="ml-guide.html">MLlib (Machine Learning)</a></li>
+                        <li><a href="graphx-programming-guide.html">GraphX (Graph Processing)</a></li>
+                        <li><a href="sparkr.html">SparkR (R on Spark)</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">API 文档<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="api/scala/index.html#org.apache.spark.package">Scala</a></li>
+                        <li><a href="api/java/index.html">Java</a></li>
+                        <li><a href="api/python/index.html">Python</a></li>
+                        <li><a href="api/R/index.html">R</a></li>
+                        <li><a href="api/sql/index.html">SQL, Built-in Functions</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">部署<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="cluster-overview.html">Overview</a></li>
+                        <li><a href="./latest/submitting-applications.html">Submitting Applications</a></li>
+                        <li class="divider"></li>
+                        <li><a href="spark-standalone.html">Spark Standalone</a></li>
+                        <li><a href="running-on-mesos.html">Mesos</a></li>
+                        <li><a href="running-on-yarn.html">YARN</a></li>
+                        <li><a href="running-on-kubernetes.html">Kubernetes</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="api.html" class="dropdown-toggle" data-toggle="dropdown">更多<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="configuration.html">Configuration</a></li>
+                        <li><a href="monitoring.html">Monitoring</a></li>
+                        <li><a href="tuning.html">Tuning Guide</a></li>
+                        <li><a href="job-scheduling.html">Job Scheduling</a></li>
+                        <li><a href="security.html">Security</a></li>
+                        <li><a href="hardware-provisioning.html">Hardware Provisioning</a></li>
+                        <li class="divider"></li>
+                        <li><a href="building-spark.html">Building Spark</a></li>
+                        <li><a href="http://spark.apache.org/contributing.html">Contributing to Spark</a></li>
+                        <li><a href="http://spark.apache.org/third-party-projects.html">Third Party Projects</a></li>
+                    </ul>
+                </li>
+
+            </ul>
+            <!--<p class="navbar-text pull-right"><span class="version-text">v2.3.1</span></p>-->
+        </div>
+    </div>
+</div>
+
+<div class="container-wrapper">
+
+
+    <div class="content" id="content">
+
+        <h1 class="title">Spark 概述</h1>
+
+        <p>
+            Apache Spark 是用于大规模数据处理的统一分析引擎。 它提供了 Java、Scala、Python 和 R 中的高级 API，以及支持通用执行图的优化引擎。 它还支持丰富的高级工具集，包括用于 SQL 和结构化数据处理的
+                <a href="sql-programming-guide.html">Spark SQL </a>、用于机器学习的 <a href="ml-guide.html">MLlib </a>、用于图形处理的 <a href="graphx-programming-guide.html">GraphX</a> 以及用于实时处理的<a href="streaming-programming-guide.html">Spark Streaming
+        </a>。</p>
+
+        <h1 id="security">安全</h1>
+        <p> 默认情况下，Spark中的安全性处于关闭状态。 这可能意味着您默认情况下容易受到攻击。 下载并运行Spark之前，请参阅
+            <a href="http://spark.apache.org/docs/latest/security.html">Spark Security</a>。</p>
+
+        <h1 id="downloading">下载</h1>
+
+        <p>从项目网站的<a href="http://spark.apache.org/downloads.html">下载页面</a>
+            获取Spark。该文档是Spark版本3.1.2。Spark会使用Hadoop的组件的HDFS和YARN。可以下载预先打包的hadoop版本。
+            用户还可以下载一个“免费的Hadoop”二进制文件，
+            <a href="hadoop-provided.html">通过增加Spark的类路径</a>用任何Hadoop版本运行Spark。
+            Scala和Java用户可以使用Maven坐标在他们的项目中包括Spark，将来Python用户也可以从PyPI安装Spark。</p>
+
+        <p>如果你想从源代码创建Spark，请访问
+            <a href="building-spark.html">Building Spark</a>。</p>
+
+        <p>Spark可以在Windows和类unix系统(如Linux、Mac
+            OS)上运行。在一台机器上本地运行很容易——您所需要的就是在系统路径上安装<code>java</code>，或者<code>JAVA_HOME</code>环境变量指向java安装。
+        </p>
+
+        <p>
+            Spark可在Java 8/11，Scala 2.12，Python 3.6 +和R 3.5+上运行。从Spark 3.0.0开始不推荐使用Java 8之前的版本8u92。从Spark 3.0.0开始不推荐使用3.6版之前的Python 2和Python 3。对于Scala API，Spark 3.1.2使用Scala 2.12。您将需要使用兼容的Scala版本（2.12.x）。
+        </p>
+
+        <p>
+            对于 Python 3.9，由于 Apache Arrow 中支持的 Python 版本，Arrow 优化和 Pandas UDF 可能不起作用。请参阅最新的 Python 兼容性页面。对于 Java 11，Apache Arrow 库还需要 -Dio.netty.tryReflectionSetAccessible=true。这可以防止 java.lang.UnsupportedOperationException: sun.misc.Unsafe 或 java.nio.DirectByteBuffer.(long, int) 当 Apache Arrow 在内部使用 Netty 时不可用。
+        </p>
+
+
+
+        <h1 id="running-the-examples-and-shell">在shell中运行示例</h1>
+
+        <p>
+            Spark自带了几个示例程序。Scala、Java、Python和R示例都在<code>examples/src/main</code>目录中。要运行Java或Scala示例程序之一，请在顶级Spark目录中使用<code>bin/run-example
+            &lt;class&gt; [params]</code>。(在后台，这将调用更通用的<a href="submitting-applications.html"><code>spark-submit</code>脚本</a>来启动应用程序)。例如,
+        </p>
+        <pre><code>./bin/run-example SparkPi 10</code></pre>
+
+        <p>您还可以通过Scala shell去交互式的运行Spark。这是学习框架的好方法。</p>
+
+        <pre><code>./bin/spark-shell --master local[2]
+</code></pre>
+
+        <p><code>--master</code>选项指定了
+            <a href="submitting-applications.html#master-urls">分布式集群的主URL</a>, 或者
+            <code>local</code> 运行一个线程, 或者<code>local[N]</code> 在本地N个线程运行。您应该从使用local进行测试开始。要获得完整的选项列表，请使用Spark shell 含有<code>--help</code>
+            选项。</p>
+
+        <p>Spark还提供了Python API。要在Python解释器中交互式地运行Spark，请使用
+            <code>bin/pyspark</code>:</p>
+
+        <pre><code>./bin/pyspark --master local[2]
+</code></pre>
+
+        <p>Python中还提供了示例应用程序。例如,</p>
+
+        <pre><code>./bin/spark-submit ../examples/src/main/python/pi.py 10
+</code></pre>
+
+        <p>
+            从1.4开始，Spark还提供了<a href="sparkr.html">R API</a>（仅包含DataFrames API）。 要在R解释器中交互式运行Spark，请使用
+            <code>bin/sparkR</code>:</p>
+
+        <pre><code>./bin/sparkR --master local[2]
+</code></pre>
+
+        <p>示例应用程序也在R中提供。例如，
+        </p>
+
+        <pre><code>./bin/spark-submit examples/src/main/r/dataframe.R
+</code></pre>
+
+        <img src="img/spark-shell.jpg"/>
+
+        <h1 id="launching-on-a-cluster">在Spark集群上运行</h1>
+
+        <p>Spark <a href="cluster-overview.html">集群模式概述</a> 解释了在集群上运行的关键概念。
+            Spark可以自己运行，也可以在多个现有集群管理器上运行。它目前提供了几个部署选项:</p>
+
+        <ul>
+            <li><a href="spark-standalone.html">Standalone Deploy Mode</a>: 在私有集群上部署Spark的最简单方法</li>
+            <li><a href="running-on-mesos.html">Apache Mesos</a></li>
+            <li><a href="running-on-yarn.html">Hadoop YARN</a></li>
+            <li><a href="running-on-kubernetes.html">Kubernetes</a></li>
+        </ul>
+
+        <h1 id="where-to-go-from-here">导航</h1>
+
+        <p><strong>编程指南:</strong></p>
+
+        <ul>
+            <li><a href="quick-start.html">快速入门</a>: Spark API的快速介绍;从这里开始!</li>
+            <li><a href="rdd-programming-guide.html">RDD编程指南</a>:  Spark基础概述-RDD（核心但旧的API），累加器和广播变量述。</li>
+            <li><a href="sql-programming-guide.html">Spark SQL, Datasets, and DataFrames</a>:
+                使用关系查询（比RDD更新的API）处理结构化数据。
+            </li>
+            <li><a href="structured-streaming-programming-guide.html">Structured Streaming</a>:
+                使用关系查询处理结构化数据流(使用 Datasets 和 DataFrames，比DStreams更新的API)
+            </li>
+            <li><a href="streaming-programming-guide.html">Spark Streaming</a>: 使用DStreams处理数据流（旧API）</li>
+            <li><a href="ml-guide.html">MLlib</a>: 应用机器学习算法</li>
+            <li><a href="graphx-programming-guide.html">GraphX</a>:图处理</li>
+            <li><a href="sparkr.html">SparkR</a>: R 处理数据</li>
+            <li><a href="graphx-programming-guide.html">PySpark</a>: Python 处理数据</li>
+        </ul>
+
+        <p><strong>API 文档:</strong></p>
+
+        <ul>
+            <li><a href="api/scala/index.html#org.apache.spark.package">Spark Scala API (Scaladoc)</a></li>
+            <li><a href="api/java/index.html">Spark Java API (Javadoc)</a></li>
+            <li><a href="api/python/index.html">Spark Python API (Sphinx)</a></li>
+            <li><a href="api/R/index.html">Spark R API (Roxygen2)</a></li>
+            <li><a href="api/sql/index.html">Spark SQL, Built-in Functions (MkDocs)</a></li>
+        </ul>
+
+        <p><strong>部署指南:</strong></p>
+
+        <ul>
+            <li><a href="cluster-overview.html">集群概述</a>: 在集群上运行时概念和组件的概述</li>
+            <li><a href="submitting-applications.html">提交应用程序</a>: 打包和部署应用程序</li>
+            <li>部署模式:
+                <ul>
+                    <li><a href="https://github.com/amplab/spark-ec2">Amazon EC2</a>: 允许您在大约5分钟内在EC2上启动集群的脚本</li>
+                    <li><a href="spark-standalone.html">Standalone Deploy Mode</a>: 在没有第三方集群管理器的情况下快速启动独立集群</li>
+                    <li><a href="running-on-mesos.html">Mesos</a>:使用<a href="http://mesos.apache.org">Apache Mesos</a>部署私有集群
+                    </li>
+                    <li><a href="running-on-yarn.html">YARN</a>: 在Hadoop(YARN)上部署Spark</li>
+                    <li><a href="running-on-kubernetes.html">Kubernetes</a>: 在Kubernetes上部署Spark</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p><strong>其他文档：</strong></p>
+
+        <ul>
+            <li><a href="configuration.html">配置</a>: 通过配置系统定制Spark</li>
+            <li><a href="monitoring.html">监控</a>: 跟踪应用程序的行为</li>
+            <li><a href="tuning.html">调试指南</a>: 优化性能和内存使用的最佳实践</li>
+            <li><a href="job-scheduling.html">作业调度</a>: 在Spark应用程序之间和内部调度资源</li>
+            <li><a href="security.html">安全性</a>: Spark安全支持</li>
+            <li><a href="hardware-provisioning.html">硬件供应</a>: 集群硬件的建议</li>
+            <li>与其他存储系统集成:
+                <ul>
+                    <li><a href="cloud-integration.html">云基础设施</a></li>
+                    <li><a href="storage-openstack-swift.html">OpenStack Swift</a></li>
+                </ul>
+            </li>
+            <li><a href="building-spark.html">构建Spark</a>: 使用Maven系统构建Spark</li>
+            <li><a href="http://spark.apache.org/contributing.html">贡献Spark</a></li>
+            <li><a href="http://spark.apache.org/third-party-projects.html">第三方项目</a>: 相关第三方Spark项目</li>
+        </ul>
+
+        <p><strong>外部资源:</strong></p>
+
+        <ul>
+            <li><a href="http://spark.apache.org">Spark 主页</a></li>
+            <li><a href="http://spark.apache.org/community.html">Spark 社区</a> 资源，包括当地的聚会</li>
+            <li><a href="http://stackoverflow.com/questions/tagged/apache-spark">StackOverflow tag
+                <code>apache-spark</code></a></li>
+            <li><a href="http://spark.apache.org/mailing-lists.html">邮件列表</a>: 在这里询问关于Spark的问题</li>
+            <li><a href="http://ampcamp.berkeley.edu/">AMP训练营</a>: 在加州大学伯克利分校的一系列训练营，包括关于Spark、Spark Streaming、Mesos等免费的<a
+                    href="http://ampcamp.berkeley.edu/6/">演讲</a>,
+                <a href="http://ampcamp.berkeley.edu/6/">幻灯片</a>和<a
+                        href="http://ampcamp.berkeley.edu/6/exercises/">练习</a></li>
+            <li><a href="http://spark.apache.org/examples.html">代码示例</a>: 在Spark示例子文件夹中还可以找到更多代码示例(
+                <a href="https://github.com/apache/spark/tree/master/examples/src/main/java/org/apache/spark/examples">Java</a>,
+                <a href="https://github.com/apache/spark/tree/master/examples/src/main/python">Python</a>,
+                <a href="https://github.com/apache/spark/tree/master/examples/src/main/r">R</a>)
+            </li>
+        </ul>
+
+
+    </div>
+
+    <!-- /container -->
+</div>
+
+<script src="js/vendor/jquery-1.8.0.min.js"></script>
+<script src="js/vendor/bootstrap.min.js"></script>
+<script src="js/vendor/anchor.min.js"></script>
+<script src="js/main.js"></script>
+
+<!-- MathJax Section -->
+<script type="text/x-mathjax-config">
+            MathJax.Hub.Config({
+                TeX: { equationNumbers: { autoNumber: "AMS" } }
+            });
+
+
+
+
+</script>
+<script>
+    // Note that we load MathJax this way to work with local file (file://), HTTP and HTTPS.
+    // We could use "//cdn.mathjax...", but that won't support "file://".
+    (function (d, script) {
+        script = d.createElement('script');
+        script.type = 'text/javascript';
+        script.async = true;
+        script.onload = function () {
+            MathJax.Hub.Config({
+                tex2jax: {
+                    inlineMath: [["$", "$"], ["\\\\(", "\\\\)"]],
+                    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+                    processEscapes: true,
+                    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+                }
+            });
+        };
+        script.src = ('https:' == document.location.protocol ? 'https://' : 'http://') +
+            'cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+        d.getElementsByTagName('head')[0].appendChild(script);
+    }(document));
+</script>
+</body>
+</html>

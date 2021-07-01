@@ -1,0 +1,401 @@
+
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Spark Streaming + Kafka 集成指南 (Kafka broker 版本 0.8.2.1 或 更高) - Spark 2.4.3 Documentation</title>
+
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+    </style>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <script src="js/vendor/modernizr-2.6.1-respond-1.1.0.min.js"></script>
+
+    <link rel="stylesheet" href="css/pygments-default.css">
+
+
+    <!-- Google analytics script -->
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-32518208-2']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+<!--[if lt IE 7]>
+<p class="chromeframe">You are using an outdated browser. <a href="https://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
+<![endif]-->
+
+<!-- This code is taken from http://twitter.github.com/bootstrap/examples/hero.html -->
+
+<div class="navbar navbar-fixed-top" id="topbar">
+    <div class="navbar-inner">
+        <div class="container">
+            <div class="brand"><a href="index.html">
+                <img src="img/spark-logo-hd.png" style="height:50px;"/></a><span class="version">2.4.3</span>
+            </div>
+            <ul class="nav">
+                <!--TODO(andyk): Add class="active" attribute to li some how.-->
+                <li><a href="index.html">概述</a></li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">编程指南<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="quick-start.html">快速开始</a></li>
+                        <li><a href="rdd-programming-guide.html">RDDs, Accumulators, Broadcasts Vars</a></li>
+                        <li><a href="sql-programming-guide.html">SQL, DataFrames, and Datasets</a></li>
+                        <li><a href="structured-streaming-programming-guide.html">Structured Streaming</a></li>
+                        <li><a href="streaming-programming-guide.html">Spark Streaming (DStreams)</a></li>
+                        <li><a href="ml-guide.html">MLlib (Machine Learning)</a></li>
+                        <li><a href="graphx-programming-guide.html">GraphX (Graph Processing)</a></li>
+                        <li><a href="sparkr.html">SparkR (R on Spark)</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">API 文档<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="api/scala/index.html#org.apache.spark.package">Scala</a></li>
+                        <li><a href="api/java/index.html">Java</a></li>
+                        <li><a href="api/python/index.html">Python</a></li>
+                        <li><a href="api/R/index.html">R</a></li>
+                        <li><a href="api/sql/index.html">SQL, Built-in Functions</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">部署<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="cluster-overview.html">Overview</a></li>
+                        <li><a href="submitting-applications.html">Submitting Applications</a></li>
+                        <li class="divider"></li>
+                        <li><a href="spark-standalone.html">Spark Standalone</a></li>
+                        <li><a href="running-on-mesos.html">Mesos</a></li>
+                        <li><a href="running-on-yarn.html">YARN</a></li>
+                        <li><a href="running-on-kubernetes.html">Kubernetes</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="api.html" class="dropdown-toggle" data-toggle="dropdown">更多<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="configuration.html">Configuration</a></li>
+                        <li><a href="monitoring.html">Monitoring</a></li>
+                        <li><a href="tuning.html">Tuning Guide</a></li>
+                        <li><a href="job-scheduling.html">Job Scheduling</a></li>
+                        <li><a href="security.html">Security</a></li>
+                        <li><a href="hardware-provisioning.html">Hardware Provisioning</a></li>
+                        <li class="divider"></li>
+                        <li><a href="building-spark.html">Building Spark</a></li>
+                        <li><a href="https://spark.apache.org/contributing.html">Contributing to Spark</a></li>
+                        <li><a href="https://spark.apache.org/third-party-projects.html">Third Party Projects</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <!--<p class="navbar-text pull-right"><span class="version-text">v2.4.3</span></p>-->
+        </div>
+    </div>
+</div>
+
+<div class="container-wrapper">
+
+
+    <div class="content" id="content">
+
+        <h1 class="title">Spark Streaming + Kafka 集成指南 (Kafka broker 版本 0.8.2.1 或 更高)</h1>
+
+
+        <p><strong>注意：从Spark 2.3.0开始，不推荐使用Kafka 0.8支持。</strong></p>
+
+        <p>
+            Spark Streaming 从 Kafka 接收数据，转换为spark streaming中的数据结构 Dstream。数据接收方式有两种 ：<br>
+            1、使用 Receiver 接收的旧方法：<br>
+            2、使用 Direct 拉取的新方法（在Spark 1.3中引入）
+        </p>
+
+        <h2 id="approach-1-receiver-based-approach">Receiver方式</h2>
+        <p>Received是使用Kafka高级Consumer API实现的。与所有接收器一样，从Kafka通过Receiver接收的数据存储在Spark Executor的内存中，然后由Spark Streaming启动的job来处理数据。</p>
+
+        <p>
+
+         然而默认配置下，这种方式可能会因为底层的失败而丢失数据（请参阅<a href="streaming-programming-guide.html#receiver-reliability">receiver 可靠性</a>）。
+            如果要启用高可靠机制，确保零数据丢失，要启用Spark Streaming的预写日志机制（<a href="streaming-programming-guide.html#deploying-applications">Deploying section</a>）。该机制会同步地将接收到的Kafka数据保存到分布式文件系统（比如HDFS）上的预写日志中，以便底层节点在发生故障时也可以使用预写日志中的数据进行恢复。
+
+        </p>
+
+        <p>接下来，我们将讨论如何在流应用程序中使用此方法。</p>
+
+        <ol>
+            <li>
+                <p><strong>依赖:</strong> 对于使用Maven项目定义的Scala / Java应用程序时，我们需要添加相应的依赖包： (查阅 <a href="streaming-programming-guide.html#linking">Linking section</a> )。</p>
+
+                <pre><code> groupId = org.apache.spark
+ artifactId = spark-streaming-kafka-0-8_2.12
+ version = 2.4.3
+</code></pre>
+                对于Python应用程序，在部署应用程序时，必须在库及其依赖项上添加此项。 请参阅下面的“部署”小节。</p>
+            </li>
+            <li>
+                <p><strong>编程:</strong> 在流应用程序代码中，导入 <code>KafkaUtils</code> 并创建输入DStream，如下所示。</p>
+
+                <div class="codetabs">
+                    <div data-lang="scala">
+        <pre><code> import org.apache.spark.streaming.kafka._
+
+ val kafkaStream = KafkaUtils.createStream(streamingContext,
+     [ZK quorum], [consumer group id], [per-topic number of Kafka partitions to consume])
+</code></pre>
+
+                        <p>您还可以使用 createStream 的构造函数指定键和值类及其相应的解码器类。 请参阅 <a href="api/java/index.html?org/apache/spark/streaming/kafka/KafkaUtils.html">API 文档</a>。</p>
+                    </div>
+                    <div data-lang="java">
+        <pre><code> import org.apache.spark.streaming.kafka.*;
+
+ JavaPairReceiverInputDStream&lt;String, String&gt; kafkaStream =
+     KafkaUtils.createStream(streamingContext,
+     [ZK quorum], [consumer group id], [per-topic number of Kafka partitions to consume]);
+</code></pre>
+
+                        <p>您还可以使用createStream的构造函数指定键和值类及其相应的解码器类。 请参阅 <a href="api/java/index.html?org/apache/spark/streaming/kafka/KafkaUtils.html">API 文档</a>。</p>
+
+                    </div>
+                    <div data-lang="python">
+        <pre><code> from pyspark.streaming.kafka import KafkaUtils
+
+ kafkaStream = KafkaUtils.createStream(streamingContext, \
+     [ZK quorum], [consumer group id], [per-topic number of Kafka partitions to consume])
+</code></pre>
+
+                        <p>By default, the Python API will decode Kafka data as UTF8 encoded strings. You can specify your custom decoding function to decode the byte arrays in Kafka records to any arbitrary data type. See the <a href="api/python/pyspark.streaming.html#pyspark.streaming.kafka.KafkaUtils">API docs</a>.</p>
+                    </div>
+                </div>
+
+                <p><strong>还有几个需要注意的点：</strong></p>
+
+                <ul>
+                    <li>
+                        <p>Kafka中topic的partition与Spark Streaming中生成的RDD的partition无关，因此，在KafkaUtils.createStream()中，增加某个topic的partition的数量，只会增加单个Receiver消费topic的线程数，也就是读取Kafka中topic partition的线程数量，它不会增加Spark在处理数据时的并行性。</p>
+                    </li>
+                    <li>
+                        <p>可以使用不同的consumer group和topic创建多个Kafka输入DStream，以使用多个receiver并行接收数据。</p>
+                    </li>
+                    <li>
+                        <p>如果已使用HDFS等复制文件系统启用了“预读日志”，则接收的数据已在日志中复制。因此，输入流的存储级别的存储级别StorageLevel.MEMORY_AND_DISK_SER（即，使用KafkaUtils.createStream(..., StorageLevel.MEMORY_AND_DISK_SER)）。</p>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <p><strong>Deploying:</strong> 与任何Spark应用程序一样，spark-submit用于启动应用程序。但是，Scala / Java应用程序和Python应用程序的细节略有不同。</p>
+
+                <p>对于Scala和Java应用程序，如果您使用SBT或Maven进行项目管理，则将spark-streaming-kafka_2.12其及其依赖项打包到应用程序JAR中；确保将spark-core_2.12和spark-streaming_2.12标记为provided的依赖项，因为它们已存在于Spark安装中。 然后使用spark-submit启动您的应用程序 (请参阅 <a href="streaming-programming-guide.html#deploying-applications">Deploying section</a> 主要编程指南中)。</p>
+
+                <p> 对于缺少SBT / Maven项目管理的Python应用程序，spark-streaming-kafka_2.12可以直接将其依赖项添加到spark-submit使用中--packages。那是，</p>
+
+                <pre><code> ./bin/spark-submit --packages org.apache.spark:spark-streaming-kafka-0-8_2.12:2.4.3 ...
+</code></pre>
+
+                <p>另外，您也可以下载Maven构件的JAR <code>spark-streaming-kafka-0-8-assembly</code> 从 <a href="https://search.maven.org/#search|ga|1|a%3A%22spark-streaming-kafka-0-8-assembly_2.12%22%20AND%20v%3A%222.4.3%22">Maven 仓库</a> ，并将其添加到 <code>spark-submit</code> 用 <code>--jars</code>。
+                  </p>
+            </li>
+        </ol>
+
+        <h2 id="approach-2-direct-approach-no-receivers">Direct方式</h2>
+        <p> 在spark1.3之后，引入了Direct方式。不同于Receiver的方式，Direct方式没有receiver这一层，其会周期性的获取Kafka中每个topic的每个partition中的最新offsets，之后根据设定的maxRatePerPartition来处理每个batch。 请注意，此功能是在Spark 1.3中为Scala和Java API引入的，在Python 1.4中为Python API引入。</p>
+
+        <p>这种方法相较于Receiver方式的优势在于：</p>
+
+        <ul>
+            <li>
+                <p><em>简化的并行：</em> 在Receiver的方式中我们提到创建多个Receiver之后利用union来合并成一个Dstream的方式提高数据传输并行度。而在Direct方式中，Kafka中的partition与RDD中的partition是一一对应的并行读取Kafka数据，这种映射关系也更利于理解和优化。</p>
+            </li>
+            <li>
+                <p><em>高效：</em> 在Receiver的方式中，为了达到0数据丢失需要将数据存入Write Ahead Log中，这样在Kafka和日志中就保存了两份数据，浪费！而第二种方式不存在这个问题，只要我们Kafka的数据保留时间足够长，我们都能够从Kafka进行数据恢复。</p>
+            </li>
+            <li>
+                <p><em>精确一次:</em> 在Receiver的方式中，使用的是Kafka的高阶API接口从Zookeeper中获取offset值，这也是传统的从Kafka中读取数据的方式，但由于Spark Streaming消费的数据和Zookeeper中记录的offset不同步，这种方式偶尔会造成数据重复消费。而第二种方式，直接使用了简单的低阶Kafka API，Offsets则利用Spark Streaming的checkpoints进行记录，消除了这种不一致性。 (参阅 <a href="streaming-programming-guide.html#semantics-of-output-operations">Semantics of output operations</a> 获取进一步信息)。</p>
+            </li>
+        </ul>
+
+        <p>请注意，此方法的一个缺点是它不会更新Zookeeper中的偏移量，因此基于Zookeeper的Kafka监视工具将不会显示进度。但是，您可以在每个批处理中访问此方法处理的偏移量，并自行更新Zookeeper。</p>
+
+        <p>接下来，我们将讨论如何在流应用程序中使用此方法。</p>
+
+        <ol>
+            <li>
+                <p><strong>依赖:</strong> 仅在Scala / Java应用程序中支持此方法。 (有关详细信息，请参阅  <a href="streaming-programming-guide.html#linking">依赖部分</a> )。</p>
+
+                <pre><code> groupId = org.apache.spark
+ artifactId = spark-streaming-kafka-0-8_2.12
+ version = 2.4.3
+</code></pre>
+            </li>
+            <li>
+                <p><strong>编程:</strong> 在流应用程序代码中，导入KafkaUtils并创建输入DStream，如下所示。</p>
+
+                <div class="codetabs">
+                    <div data-lang="scala">
+        <pre><code> import org.apache.spark.streaming.kafka._
+
+ val directKafkaStream = KafkaUtils.createDirectStream[
+     [key class], [value class], [key decoder class], [value decoder class] ](
+     streamingContext, [map of Kafka parameters], [set of topics to consume])
+</code></pre>
+
+                        <p>
+                            您还可以将messageHandler传递给createDirectStream以访问MessageAndMetadata，其中包含有关当前消息的元数据并将其转换为任何所需类型。 请参阅API文档。</p>
+
+                    </div>
+                    <div data-lang="java">
+        <pre><code> import org.apache.spark.streaming.kafka.*;
+
+ JavaPairInputDStream&lt;String, String&gt; directKafkaStream =
+     KafkaUtils.createDirectStream(streamingContext,
+         [key class], [value class], [key decoder class], [value decoder class],
+         [map of Kafka parameters], [set of topics to consume]);
+</code></pre>
+
+                        <p>
+
+                            您还可以将messageHandler传递给createDirectStream以访问MessageAndMetadata，其中包含有关当前消息的元数据并将其转换为任何所需类型。 请参阅API文档。</p>
+
+                    </div>
+                    <div data-lang="python">
+        <pre><code> from pyspark.streaming.kafka import KafkaUtils
+ directKafkaStream = KafkaUtils.createDirectStream(ssc, [topic], {"metadata.broker.list": brokers})
+</code></pre>
+
+                        <p>You can also pass a <code>messageHandler</code> to <code>createDirectStream</code> to access <code>KafkaMessageAndMetadata</code> that contains metadata about the current message and transform it to any desired type.
+                            By default, the Python API will decode Kafka data as UTF8 encoded strings. You can specify your custom decoding function to decode the byte arrays in Kafka records to any arbitrary data type. See the <a href="api/python/pyspark.streaming.html#pyspark.streaming.kafka.KafkaUtils">API docs</a>.</p>
+                    </div>
+                </div>
+
+                <p>在Kafka参数中，您必须指定metadata.broker.list或bootstrap.servers。 默认情况下，它将从每个Kafka分区的最新偏移开始消耗。 如果将Kafka参数中的配置auto.offset.reset设置为最小，那么它将从最小的偏移开始消耗。</p>
+
+                <p>您还可以使用KafkaUtils.createDirectStream的其他变体从任意偏移开始消费。 此外，如果要访问每批中消耗的Kafka偏移量，可以执行以下操作。</p>
+
+                <div class="codetabs">
+                    <div data-lang="scala">
+        <pre><code> // Hold a reference to the current offset ranges, so it can be used downstream
+ var offsetRanges = Array.empty[OffsetRange]
+
+ directKafkaStream.transform { rdd =&gt;
+   offsetRanges = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
+   rdd
+ }.map {
+           ...
+ }.foreachRDD { rdd =&gt;
+   for (o &lt;- offsetRanges) {
+     println(s"${o.topic} ${o.partition} ${o.fromOffset} ${o.untilOffset}")
+   }
+   ...
+ }
+</code></pre>
+                    </div>
+                    <div data-lang="java">
+        <pre><code> // Hold a reference to the current offset ranges, so it can be used downstream
+ AtomicReference&lt;OffsetRange[]&gt; offsetRanges = new AtomicReference&lt;&gt;();
+
+ directKafkaStream.transformToPair(rdd -&gt; {    OffsetRange[] offsets = ((HasOffsetRanges) rdd.rdd()).offsetRanges();    offsetRanges.set(offsets);    return rdd;
+ }).map(
+   ...
+ ).foreachRDD(rdd -&gt; {    for (OffsetRange o : offsetRanges.get()) {
+ System.out.println(
+   o.topic() + " " + o.partition() + " " + o.fromOffset() + " " + o.untilOffset()
+ );    }    ...
+ });
+</code></pre>
+                    </div>
+                    <div data-lang="python">
+        <pre><code> offsetRanges = []
+
+ def storeOffsetRanges(rdd):
+     global offsetRanges
+     offsetRanges = rdd.offsetRanges()
+     return rdd
+
+ def printOffsetRanges(rdd):
+     for o in offsetRanges:
+         print "%s %s %s %s" % (o.topic, o.partition, o.fromOffset, o.untilOffset)
+
+ directKafkaStream \
+     .transform(storeOffsetRanges) \
+     .foreachRDD(printOffsetRanges)
+</code></pre>
+                    </div>
+                </div>
+
+                <p>如果希望基于Zookeeper的Kafka监视工具显示流应用程序的进度，可以使用此命令自行更新Zookeeper。
+                </p>
+
+                <p>请注意，HasOffsetRanges的类型转换只有在directKafkaStream上调用的第一个方法中完成时才会成功，而不是在一系列方法中完成。您可以使用transform（）而不是foreachRDD（）作为第一个方法调用来访问偏移量，然后调用更多的Spark方法。但是，请注意，在任何混洗或重新分区的方法之后，RDD分区和Kafka分区之间的一对一映射不会保留，例如， reduceByKey（）或window（）。</p>
+
+                <p>另外需要注意的是，由于此方法不使用Receiver，因此标准接收器相关（即spark.streaming.receiver。*形式的配置）将不适用于此方法创建的输入DStream（将适用于其他输入DStreams虽然）。相反，使用配置spark.streaming.kafka.*。一个重要的是spark.streaming.kafka.maxRatePerPartition，它是此直接API读取每个Kafka分区的最大速率（以每秒消息数为单位）。</p>
+            </li>
+            <li>
+                <p><strong>部署:</strong> 这与第一种方法相同。</p>
+            </li>
+        </ol>
+
+
+    </div>
+
+    <!-- /container -->
+</div>
+
+<script src="js/vendor/jquery-1.12.4.min.js"></script>
+<script src="js/vendor/bootstrap.min.js"></script>
+<script src="js/vendor/anchor.min.js"></script>
+<script src="js/main.js"></script>
+
+<!-- MathJax Section -->
+<script type="text/x-mathjax-config">
+            MathJax.Hub.Config({
+                TeX: { equationNumbers: { autoNumber: "AMS" } }
+            });
+        </script>
+<script>
+    // Note that we load MathJax this way to work with local file (file://), HTTP and HTTPS.
+    // We could use "//cdn.mathjax...", but that won't support "file://".
+    (function(d, script) {
+        script = d.createElement('script');
+        script.type = 'text/javascript';
+        script.async = true;
+        script.onload = function(){
+            MathJax.Hub.Config({
+                tex2jax: {
+                    inlineMath: [ ["$", "$"], ["\\\\(","\\\\)"] ],
+                    displayMath: [ ["$$","$$"], ["\\[", "\\]"] ],
+                    processEscapes: true,
+                    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+                }
+            });
+        };
+        script.src = ('https:' == document.location.protocol ? 'https://' : 'http://') +
+            'cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js' +
+            '?config=TeX-AMS-MML_HTMLorMML';
+        d.getElementsByTagName('head')[0].appendChild(script);
+    }(document));
+</script>
+</body>
+</html>

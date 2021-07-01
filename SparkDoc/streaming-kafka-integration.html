@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Spark Streaming + Kafka Integration Guide - Spark 2.4.3 Documentation</title>
+
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+    </style>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <script src="js/vendor/modernizr-2.6.1-respond-1.1.0.min.js"></script>
+
+    <link rel="stylesheet" href="css/pygments-default.css">
+
+
+    <!-- Google analytics script -->
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-32518208-2']);
+        _gaq.push(['_trackPageview']);
+
+        (function () {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+<!--[if lt IE 7]>
+<p class="chromeframe">You are using an outdated browser. <a href="https://browsehappy.com/">Upgrade your browser
+    today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better
+    experience this site.</p>
+<![endif]-->
+
+<!-- This code is taken from http://twitter.github.com/bootstrap/examples/hero.html -->
+
+<div class="navbar navbar-fixed-top" id="topbar">
+    <div class="navbar-inner">
+        <div class="container">
+            <div class="brand"><a href="index.html">
+                <img src="img/spark-logo-hd.png" style="height:50px;"/></a><span class="version">2.4.3</span>
+            </div>
+            <ul class="nav">
+                <!--TODO(andyk): Add class="active" attribute to li some how.-->
+                <li><a href="index.html">Overview</a></li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Programming Guides<b
+                            class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="quick-start.html">Quick Start</a></li>
+                        <li><a href="rdd-programming-guide.html">RDDs, Accumulators, Broadcasts Vars</a></li>
+                        <li><a href="sql-programming-guide.html">SQL, DataFrames, and Datasets</a></li>
+                        <li><a href="structured-streaming-programming-guide.html">Structured Streaming</a></li>
+                        <li><a href="streaming-programming-guide.html">Spark Streaming (DStreams)</a></li>
+                        <li><a href="ml-guide.html">MLlib (Machine Learning)</a></li>
+                        <li><a href="graphx-programming-guide.html">GraphX (Graph Processing)</a></li>
+                        <li><a href="sparkr.html">SparkR (R on Spark)</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">API Docs<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="api/scala/index.html#org.apache.spark.package">Scala</a></li>
+                        <li><a href="api/java/index.html">Java</a></li>
+                        <li><a href="api/python/index.html">Python</a></li>
+                        <li><a href="api/R/index.html">R</a></li>
+                        <li><a href="api/sql/index.html">SQL, Built-in Functions</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Deploying<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="cluster-overview.html">Overview</a></li>
+                        <li><a href="submitting-applications.html">Submitting Applications</a></li>
+                        <li class="divider"></li>
+                        <li><a href="spark-standalone.html">Spark Standalone</a></li>
+                        <li><a href="running-on-mesos.html">Mesos</a></li>
+                        <li><a href="running-on-yarn.html">YARN</a></li>
+                        <li><a href="running-on-kubernetes.html">Kubernetes</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="api.html" class="dropdown-toggle" data-toggle="dropdown">More<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="configuration.html">Configuration</a></li>
+                        <li><a href="monitoring.html">Monitoring</a></li>
+                        <li><a href="tuning.html">Tuning Guide</a></li>
+                        <li><a href="job-scheduling.html">Job Scheduling</a></li>
+                        <li><a href="security.html">Security</a></li>
+                        <li><a href="hardware-provisioning.html">Hardware Provisioning</a></li>
+                        <li class="divider"></li>
+                        <li><a href="building-spark.html">Building Spark</a></li>
+                        <li><a href="https://spark.apache.org/contributing.html">Contributing to Spark</a></li>
+                        <li><a href="https://spark.apache.org/third-party-projects.html">Third Party Projects</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <!--<p class="navbar-text pull-right"><span class="version-text">v2.4.3</span></p>-->
+        </div>
+    </div>
+</div>
+
+<div class="container-wrapper">
+
+
+    <p class="content" id="content">
+
+    <h1 class="title">Spark Streaming + Kafka 集成指南</h1>
+
+
+    <p><a href="https://kafka.apache.org/">Apache Kafka</a>
+        是分布式消息队列系统，主要用作数据的缓存（保存到磁盘）然后被SparkStreaming或者Flink进行数据的实时计算。 在使用Spark 去集成 Kafka之前，请仔细阅读<a
+                href="https://kafka.apache.org/documentation.html">Kafka 文档</a>。</p>
+
+    <p>Kafka 项目在版本 0.8 和 0.10 之间引入了一个新的 consumer API, 所以有两个独立的相应Spark Streaming包可用。 在实际生产环境中为你的 broker 选择正确的包使用;
+        注意，0.8集成与后来的0.9和0.10代理兼容，但0.10集成与早期的代理不兼容。</p>
+
+    <p>Spark Streaming从Kafka接收数据，转换为spark streaming中的数据结构Dstream。</p>
+    <p> 数据接收方式有两种 ：1 使用Receiver接收（0.10不在支持使用） 2 使用Direct拉取（在Spark 1.3中引入）。</p>
+    <p><strong>注意：从Spark 2.3.0开始，不推荐使用Kafka 0.8支持。</strong></p>
+
+    <table class="table">
+        <tr>
+            <th></th>
+            <th><a href="streaming-kafka-0-8-integration.html">spark-streaming-kafka-0-8</a></th>
+            <th><a href="streaming-kafka-0-10-integration.html">spark-streaming-kafka-0-10</a></th>
+        </tr>
+        <tr>
+            <td>Broker Version</td>
+            <td>0.8.2.1 or higher</td>
+            <td>0.10.0 or higher</td>
+        </tr>
+        <tr>
+            <td>API Maturity</td>
+            <td>Deprecated</td>
+            <td>Stable</td>
+        </tr>
+        <tr>
+            <td>Language Support</td>
+            <td>Scala, Java, Python</td>
+            <td>Scala, Java</td>
+        </tr>
+        <tr>
+            <td>Receiver DStream</td>
+            <td>Yes</td>
+            <td>No</td>
+        </tr>
+        <tr>
+            <td>Direct DStream</td>
+            <td>Yes</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>SSL / TLS Support</td>
+            <td>No</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>Offset Commit API</td>
+            <td>No</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>Dynamic Topic Subscription</td>
+            <td>No</td>
+            <td>Yes</td>
+        </tr>
+    </table>
+
+    <p><strong>扩展:</strong></p>
+    <p>Window平台下单机测试 Flume => Kafka => SparkStreaming</p>
+    <p>环境搭建: </br>
+        1）安装Zookeeper 修改配置文件 zoo.cfg 指定 dataDir </br>
+        2）安装Flume 添加配置信息 netcat.conf </br>
+        3）安装Kafka 配置 server.properties </br>
+
+        启动服务：</br>
+        1）启动ZK ：zkServer.cmd </br>
+        2）启动Flume ：flume-ng.cmd agent -n a1 -f \conf\netcat.conf</br>
+        3）启动Kafka ：kafka-server-start.bat ..\..\config\server.properties </br>
+        4）启动 SparkStreaming应用程序在IDEA中 </br>
+        5）启动netcat ： nc localhost 4444 输入数据  </br>
+    </p>
+    <p><strong>netcat.conf文件</strong></br>
+        </br>
+        a1.sources = r1</br>
+        a1.channels = c1</br>
+        a1.sinks = k1</br>
+
+        a1.sources.r1.type=netcat</br>
+        a1.sources.r1.bind=localhost</br>
+        a1.sources.r1.port=4444</br>
+
+        a1.channels.c1.type=file</br>
+        a1.channels.c1.checkpointDir = D:\checkpoint</br>
+        a1.channels.c1.dataDirs = D:\flume\data</br>
+
+        #a1.sinks.k1.type=logger</br>
+        a1.sinks.k1.type = org.apache.flume.sink.kafka.KafkaSink</br>
+        a1.sinks.k1.brokerList = localhost:9092</br>
+        a1.sinks.k1.topic = weblogs</br>
+        a1.sinks.k1.zookeeperConnect = localhost:2181</br>
+        a1.sinks.k1.requiredAcks = 1</br>
+        a1.sinks.k1.batchSize = 1</br>
+        a1.sinks.k1.serializer.class = kafka.serializer.StringEncoder</br>
+        a1.sources.r1.channels=c1</br>
+        a1.sinks.k1.channel=c1</br>
+
+        <strong>实际生产环境下 a1.sinks.k1.brokerList 和 a1.sinks.k1.zookeeperConnect 指定多个Kafka的Broker</strong>
+    </p>
+
+    <div class="codetabs">
+        <div data-lang="scala">
+            <figure class="highlight"><pre><div class="language-scala" data-lang="scala"><span></span><span class="k">import</span> <span
+                    class="nn">org.apache.spark._</span>
+<span class="k">import</span> <span class="nn">kafka.serializer.StringDecoder</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.sql.SparkSession</span> <span class="c1"></span>
+<span class="k">import</span> <span class="nn">org.apache.spark.streaming.kafka.KafkaUtils</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.streaming.{Seconds, StreamingContext}</span>
+
+
+<span class="c1">// 创建一个具有两个工作线程（working thread）并且批次间隔为 1 秒的本地 StreamingContext。</span>
+<span class="c1">// master 需要 2 个核，以防止饥饿情况（starvation scenario）。</span>
+
+
+
+import kafka.serializer.StringDecoder <br>
+import org.apache.spark.sql.SparkSession <br>
+import org.apache.spark.streaming.kafka.KafkaUtils <br>
+import org.apache.spark.streaming.{Seconds, StreamingContext} <br>
+
+object SparkStreaming_Kafka { <br>
+  def main(args: Array[String]): Unit = { <br>
+
+    val spark = SparkSession.builder().appName("SparkStreaming_Kafka").master("local[2]").getOrCreate() <br>
+    val sc = spark.sparkContext <br>
+    sc.setLogLevel("WARN") <br>
+    val ssc = new StreamingContext(sc, Seconds(1)) <br>
+    val topicsSet = Set("weblogs") <br>
+    // 指定kafka Broker 生产环境下需要指定多个 <br>
+    val kafkaParams = Map[String, String]("metadata.broker.list" -> "localhost:9092") <br>
+    // DirectStream 接收Kafka数据 <br>
+   <br>  val kafkaStream = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](
+      ssc, kafkaParams, topicsSet) <br>
+    // x._2 是固定写法 表示获取数据 <br>
+    val lines = kafkaStream.map(x => x._2) <br>
+    // 将每个batch中的每行数据安装空格切分为单词数组 <br>
+    val words = lines.flatMap(_.split(" ")) <br>
+    // map() 将每个单词转为tuple(word,1) reduceByKey()对（k,V）按照K聚合 <br>
+    val wordCounts = words.map(x => (x, 1L)).reduceByKey(_ + _) <br>
+    // print()输出算子 <br>
+    wordCounts.print() <br>
+    // 触发计算逻辑 <br>
+    ssc.start() <br>
+    // 等待程序的终止 要么手动执行，要么异常退出 <br>
+    ssc.awaitTermination() <br>
+  } <br>
+} <br>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+
+<!-- /container -->
+</div>
+
+<script src="js/vendor/jquery-1.12.4.min.js"></script>
+<script src="js/vendor/bootstrap.min.js"></script>
+<script src="js/vendor/anchor.min.js"></script>
+<script src="js/main.js"></script>
+
+<!-- MathJax Section -->
+<script type="text/x-mathjax-config">
+            MathJax.Hub.Config({
+                TeX: { equationNumbers: { autoNumber: "AMS" } }
+            });
+
+</script>
+<script>
+    // Note that we load MathJax this way to work with local file (file://), HTTP and HTTPS.
+    // We could use "//cdn.mathjax...", but that won't support "file://".
+    (function (d, script) {
+        script = d.createElement('script');
+        script.type = 'text/javascript';
+        script.async = true;
+        script.onload = function () {
+            MathJax.Hub.Config({
+                tex2jax: {
+                    inlineMath: [["$", "$"], ["\\\\(", "\\\\)"]],
+                    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+                    processEscapes: true,
+                    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+                }
+            });
+        };
+        script.src = ('https:' == document.location.protocol ? 'https://' : 'http://') +
+            'cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js' +
+            '?config=TeX-AMS-MML_HTMLorMML';
+        d.getElementsByTagName('head')[0].appendChild(script);
+    }(document));
+</script>
+</body>
+</html>

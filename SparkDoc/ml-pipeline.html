@@ -1,0 +1,1041 @@
+
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>ML Pipelines - Spark 2.4.0 Documentation</title>
+
+
+
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+    </style>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <script src="js/vendor/modernizr-2.6.1-respond-1.1.0.min.js"></script>
+
+    <link rel="stylesheet" href="css/pygments-default.css">
+
+
+    <!-- Google analytics script -->
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-32518208-2']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+<!--[if lt IE 7]>
+<p class="chromeframe">You are using an outdated browser. <a href="https://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
+<![endif]-->
+
+<!-- This code is taken from http://twitter.github.com/bootstrap/examples/hero.html -->
+
+<div class="navbar navbar-fixed-top" id="topbar">
+    <div class="navbar-inner">
+        <div class="container">
+            <div class="brand"><a href="index.html">
+                <img src="img/spark-logo-hd.png" style="height:50px;"/></a><span class="version">2.4.0</span>
+            </div>
+            <ul class="nav">
+                <!--TODO(andyk): Add class="active" attribute to li some how.-->
+                <li><a href="index.html">Overview</a></li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Programming Guides<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="quick-start.html">Quick Start</a></li>
+                        <li><a href="rdd-programming-guide.html">RDDs, Accumulators, Broadcasts Vars</a></li>
+                        <li><a href="sql-programming-guide.html">SQL, DataFrames, and Datasets</a></li>
+                        <li><a href="structured-streaming-programming-guide.html">Structured Streaming</a></li>
+                        <li><a href="streaming-programming-guide.html">Spark Streaming (DStreams)</a></li>
+                        <li><a href="ml-guide.html">MLlib (Machine Learning)</a></li>
+                        <li><a href="graphx-programming-guide.html">GraphX (Graph Processing)</a></li>
+                        <li><a href="sparkr.html">SparkR (R on Spark)</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">API Docs<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="api/scala/index.html#org.apache.spark.package">Scala</a></li>
+                        <li><a href="api/java/index.html">Java</a></li>
+                        <li><a href="api/python/index.html">Python</a></li>
+                        <li><a href="api/R/index.html">R</a></li>
+                        <li><a href="api/sql/index.html">SQL, Built-in Functions</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Deploying<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="cluster-overview.html">Overview</a></li>
+                        <li><a href="submitting-applications.html">Submitting Applications</a></li>
+                        <li class="divider"></li>
+                        <li><a href="spark-standalone.html">Spark Standalone</a></li>
+                        <li><a href="running-on-mesos.html">Mesos</a></li>
+                        <li><a href="running-on-yarn.html">YARN</a></li>
+                        <li><a href="running-on-kubernetes.html">Kubernetes</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="api.html" class="dropdown-toggle" data-toggle="dropdown">More<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="configuration.html">Configuration</a></li>
+                        <li><a href="monitoring.html">Monitoring</a></li>
+                        <li><a href="tuning.html">Tuning Guide</a></li>
+                        <li><a href="job-scheduling.html">Job Scheduling</a></li>
+                        <li><a href="security.html">Security</a></li>
+                        <li><a href="hardware-provisioning.html">Hardware Provisioning</a></li>
+                        <li class="divider"></li>
+                        <li><a href="building-spark.html">Building Spark</a></li>
+                        <li><a href="https://spark.apache.org/contributing.html">Contributing to Spark</a></li>
+                        <li><a href="https://spark.apache.org/third-party-projects.html">Third Party Projects</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <!--<p class="navbar-text pull-right"><span class="version-text">v2.4.0</span></p>-->
+        </div>
+    </div>
+</div>
+
+<div class="container-wrapper">
+
+
+    <div class="left-menu-wrapper">
+        <div class="left-menu">
+            <h3><a href="ml-guide.html">机器学习库(MLlib) 指南</a></h3>
+
+            <ul>
+
+                <li>
+                    <a href="ml-statistics.html">
+
+                        基本统计
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-datasource.html">
+
+                        数据源
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-pipeline.html">
+
+                        Pipelines (管道)
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-features.html">
+
+                        特征提取, 转换和选择
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-classification-regression.html">
+
+                        分类和回归
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-clustering.html">
+
+                        聚类
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-collaborative-filtering.html">
+
+                        协同过滤
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-frequent-pattern-mining.html">
+
+                        频繁模式挖掘
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-tuning.html">
+
+                        模型选择和调整
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="ml-advanced.html">
+
+                        高级主题
+
+                    </a>
+                </li>
+
+
+
+            </ul>
+
+            <h3><a href="mllib-guide.html">MLlib：基于RDD的API指南</a></h3>
+
+            <ul>
+
+                <li>
+                    <a href="mllib-data-types.html">
+
+                        数据类型
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-statistics.html">
+
+                        基本统计
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-classification-regression.html">
+
+                        分类和回归
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-collaborative-filtering.html">
+
+                        协同过滤
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-clustering.html">
+
+                        聚类
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-dimensionality-reduction.html">
+
+                        降维
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-feature-extraction.html">
+
+                        特征提取,转换和选择
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-frequent-pattern-mining.html">
+
+                        频繁模式数据挖掘
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-evaluation-metrics.html">
+
+                        评估指标
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-pmml-model-export.html">
+
+                        PMML 模型导出
+
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="mllib-optimization.html">
+
+                        优化 (开发人员)
+
+                    </a>
+                </li>
+
+
+
+            </ul>
+
+        </div>
+    </div>
+
+    <input id="nav-trigger" class="nav-trigger" checked type="checkbox">
+    <label for="nav-trigger"></label>
+    <div class="content-with-sidebar" id="content">
+
+        <h1 class="title">ML Pipelines</h1>
+
+
+
+        <p>
+
+            在本节中，我们将介绍<strong><em>ML Pipelines</em></strong>的概念。ML Pipelines提供了一组基于<a href="sql-programming-guide.html">DataFrames</a>构建的统一的高级API ，可帮助用户创建和调整实用的机器学习流程。
+        </p>
+
+        <p><strong>目录</strong></p>
+
+        <ul id="markdown-toc">
+            <li><a href="#main-concepts-in-pipelines" id="markdown-toc-main-concepts-in-pipelines">Pipelines 的主要概念</a>    <ul>
+                <li><a href="#dataframe" id="markdown-toc-dataframe">DataFrame</a></li>
+                <li><a href="#pipeline-components" id="markdown-toc-pipeline-components">Pipeline 组件</a>        <ul>
+                    <li><a href="#transformers" id="markdown-toc-transformers">Transformers</a></li>
+                    <li><a href="#estimators" id="markdown-toc-estimators">Estimators</a></li>
+                    <li><a href="#properties-of-pipeline-components" id="markdown-toc-properties-of-pipeline-components">Pipeline组件的属性</a></li>
+                </ul>
+                </li>
+                <li><a href="#pipeline" id="markdown-toc-pipeline">Pipeline</a>        <ul>
+                    <li><a href="#how-it-works" id="markdown-toc-how-it-works">如何工作</a></li>
+                    <li><a href="#details" id="markdown-toc-details">细节</a></li>
+                </ul>
+                </li>
+                <li><a href="#parameters" id="markdown-toc-parameters">Parameters (参数)</a></li>
+                <li><a href="#ml-persistence-saving-and-loading-pipelines" id="markdown-toc-ml-persistence-saving-and-loading-pipelines">ML持久化:保存和加载Pipelines</a>        <ul>
+                    <li><a href="#backwards-compatibility-for-ml-persistence" id="markdown-toc-backwards-compatibility-for-ml-persistence">ML持久化的向后兼容性</a></li>
+                </ul>
+                </li>
+            </ul>
+            </li>
+            <li><a href="#code-examples" id="markdown-toc-code-examples">代码示例</a>    <ul>
+                <li><a href="#example-estimator-transformer-and-param" id="markdown-toc-example-estimator-transformer-and-param">Example: Estimator, Transformer, and Param</a></li>
+                <li><a href="#example-pipeline" id="markdown-toc-example-pipeline">Example: Pipeline</a></li>
+                <li><a href="#model-selection-hyperparameter-tuning" id="markdown-toc-model-selection-hyperparameter-tuning">模型选择 (超参数调整)</a></li>
+            </ul>
+            </li>
+        </ul>
+
+        <h1 id="main-concepts-in-pipelines">Pipelines主要概念</h1>
+
+        <p>MLlib标准化API用于机器学习算法中，以便更轻松地将多个算法组合到单个管道或工作流程中。
+            本节介绍Pipelines API引入的关键概念，其中管道概念主要受到 <a href="http://scikit-learn.org/">scikit-learn</a>项目的启发。</p>
+
+        <ul>
+            <li>
+                <p><strong><a href="ml-pipeline.html#dataframe"><code>DataFrame</code></a></strong>: ML API 将从Spark SQL查出来的  <code>DataFrame</code> 作为 ML 的数据集,数据集支持许多数据类型。例如,一个
+                   <code>DataFrame</code> 可以有不同的列储存 text（文本）、feature（特征向量）、true labels（标注）、predictions（预测结果）等机器学习数据类型.</p>
+            </li>
+            <li>
+                <p><strong><a href="ml-pipeline.html#transformers"><code>Transformer</code></a></strong>: <code>Transformer</code> 是一种可以将一个 <code>DataFrame</code> 转换为另一个<code>DataFrame</code>的算法。
+                    例如，ML model 就是一个 <code>Transformer</code> 可以将具有特征的<code>DataFrame</code> 转换为具有预测结果的<code>DataFrame</code> 。</p>
+            </li>
+            <li>
+                <p><strong><a href="ml-pipeline.html#estimators"><code>Estimator</code></a></strong>: 它是机器学习算法的概括。<code>Estimator(如:逻辑回归算法)</code> fit(拟合操作)一个 <code>DataFrame</code> 产生<code>Transformer(变换 即:模型)</code>的算法。
+                    例如,一个学习算法就是一个<code>Estimator</code> 训练 <code>DataFrame</code> 并产生一个模型的过程。</p>
+            </li>
+            <li>
+                <p><strong><a href="ml-pipeline.html#pipeline"><code>Pipeline</code></a></strong>: <code>Pipeline</code> 将多个<code>Transformer</code>s 和 <code>Estimator</code>s 绑在一起形成一个 ML 工作流.</p>
+            </li>
+            <li>
+                <p><strong><a href="ml-pipeline.html#parameters"><code>Parameter</code></a></strong>: 所有的<code>Transformer</code>s 和 <code>Estimator</code>s 都已经使用标准的 API 来指定参数。</p>
+            </li>
+        </ul>
+
+        <h2 id="dataframe">DataFrame</h2>
+
+        <p>机器学习可以应用于各种各样的数据类型, 比如向量，文本，图像和结构化数据。
+            API 采用 Spark Sql 的 <code>DataFrame</code> 就是为了支持各种各样的数据类型。</p>
+
+        <p><code>DataFrame</code> 支持许多基本的结构化的数据，参考 <a href="sql-reference.html#data-types">Spark SQL datatype reference</a> 上的一系列支持的类型。另外除了 Spark SQL 指南列举的类型,
+            <code>DataFrame</code> 还支持使用 ML <a href="mllib-data-types.html#local-vector"><code>Vector</code></a> 类型。</p>
+
+        <p><code>DataFrame</code>可以用标准的<code>RDD</code> 显式或者非显式创建。请参考下面的例子，或者前往 <a href="sql-programming-guide.html">Spark SQL 编程指南</a> 查看例子。</p>
+
+        <p><code>DataFrame</code>中的列是有名称的，下面的代码示例会使用名称如  &#8220;text,&#8221; &#8220;features,&#8221; 和 &#8220;label.&#8221;</p>
+
+        <h2 id="pipeline-components">Pipeline 组件</h2>
+
+        <h3 id="transformers">Transformers</h3>
+
+        <p><code>Transformer</code> 是特征变换和机器学习模型的抽象。
+            技术上, 一个<code>Transformer</code> 必须实现 <code>transform()</code>方法, 这个方法将一个<code>DataFrame</code>
+            通常是附加一个或者多个列。比如：
+            </p>
+
+        <ul>
+            <li>一个特征变换器是输入一个 <code>DataFrame</code>, 读取一列 (比如: text), 将其映射成一个新列（比如，特征向量），然后输出一个新的 <code>DataFrame</code>并包含这个映射的列。</li>
+            <li>一个机器学习模型是输入一个 <code>DataFrame</code>, 读取包含特征向量的列,预测每个特征向量的标签,并输出一个新的 <code>DataFrame</code>
+                ，并附加预测标签作为一列。</li>
+        </ul>
+
+        <h3 id="estimators">Estimators</h3>
+
+        <p><code>Estimator</code>模型学习器是拟合(fit)并且训练数据的机器学习算法或者其他算法的抽象。
+            技术上来说,<code>Estimator</code> 实现 <code>fit()</code>方法, 这个方法输入一个 <code>DataFrame</code> 并产生一个模型
+            <code>Model</code>,即一个 <code>Transformer</code>（转换器）。
+            举个例子，一个机器学习算法是一个<code>Estimator</code>模型学习器,比如这个算法是 <code>LogisticRegression</code> （逻辑回归），调用
+            <code>fit()</code>方法，训练出 <code>LogisticRegressionModel</code>, 这是一个<code>Model</code>因此也是一个 <code>Transformer</code>（转换器）。</p>
+
+        <h3 id="properties-of-pipeline-components">Pipeline组件的属性</h3>
+
+        <p><code>Transformer.transform()</code> 和 <code>Estimator.fit()</code>都是无状态。以后,可以通过替换概念来支持有状态算法.</p>
+
+        <p><code>Transformer</code> 或 <code>Estimator</code> 的每个实例都有一个唯一的ID，可用于指定参数（如下所述）。</p>
+
+        <h2 id="pipeline">Pipeline</h2>
+
+        <p>在机器学习中,通常会执行一系列算法来处理和学习模型，比如，一个简单的文本文档处理流程可能包括这几个步骤：</p>
+
+        <ul>
+            <li>把每个文档的文本分割成单词。</li>
+            <li>将这些单词转换成一个数值型特征向量。</li>
+            <li>使用特征向量和标签学习一个预测模型。</li>
+        </ul>
+
+        <p>MLlib 代表一个流水线,就是一个 <code>Pipeline</code>（管道）, <code>Pipeline</code> 包含了一系列有特定顺序的
+            <code>PipelineStage</code> (<code>Transformer</code> 和 <code>Estimator</code>)我们将使用这个简单的工作流作为本节的运行示例。</p>
+
+        <h3 id="how-it-works">如何工作</h3>
+
+        <p>一个<code>Pipeline</code> 由多个步骤组成,每一个步骤都是一个 <code>Transformer（转换器）</code>或者 <code>Estimator（模型学习器）</code>。
+            这些步骤按顺序执行，输入的<code>DataFrame</code>在通过每个步骤 (阶段) 时进行转换。
+            在<code>Transformer （转换器）</code>步骤中, <code>DataFrame</code>会调用 <code>transform()</code> 方法。
+            在<code>Estimator（模型学习器）</code>步骤中, <code>fit()</code>方法被调用并产生一个 <code>Transformer（转换器）</code> (会成为 <code>PipelineModel</code>（管道模型）的一部分,或者适配(<code>Pipeline</code>), 并且 <code>DataFrame</code>会调用这个<code>Transformer</code>&#8217;的 <code>transform()</code> 方法。</p>
+
+        <p>我们通过简单的文本文档工作流来说明;下图是显示了使用 <code>Pipeline</code>的 <em>训练流程</em>。</p>
+
+        <p style="text-align: center;">
+            <img src="img/ml-Pipeline.png" title="ML Pipeline Example" alt="ML Pipeline Example" width="80%" />
+        </p>
+
+        <p>以上,顶部的一行代表 <code>Pipeline（管道）</code> 有三个步骤。
+            第一第二个(<code>Tokenizer（分词器）</code> 和 <code>HashingTF（词频）</code>) 是 <code>Transformer</code> (蓝色), 第三个是<code>Estimator（模型学习器）</code>(<code>LogisticRegression</code>)(红色).
+            底部的一行表示流经管道的数据,其中柱面表示<code>DataFrame</code>。
+            最初的<code>DataFrame</code> 有少量的文本文档和标签, 会调用<code>Pipeline.fit()</code>。
+            <code>Tokenizer.transform()</code>方法将原始文本分割成单词,并将这些单词作为一列添加到 <code>DataFrame</code>。
+            接下来<code>HashingTF.transform()</code>方法将单词列转换成特征向量,并向  <code>DataFrame</code>添加带有这些向量的新列。现在,由于
+            <code>LogisticRegression</code> 是一个 <code>Estimator(模型学习器)</code>,<code>Pipeline</code> 会首先调用 <code>LogisticRegression.fit()</code> 来生成一个<code>LogisticRegressionModel</code>。
+            <code>DataFrame</code>再调用 <code>LogisticRegressionModel</code>&#8217;的<code>transform()</code>
+            方法在  <code>DataFrame</code>传送到下一个步骤之前。</p>
+
+        <p>一个<code>Pipeline</code>也是一个<code>Estimator（模型学习器）</code>，
+            <code>Pipeline</code>的<code>fit()</code>方法运行之后，它会生成一个<code>PipelineModel</code>, 它是一个
+            <code>Transformer</code>。
+            这个<code>PipelineModel</code>在测试流程中使用; 下图说明了这种用法。</p>
+
+        <p style="text-align: center;">
+            <img src="img/ml-PipelineModel.png" title="ML PipelineModel Example" alt="ML PipelineModel Example" width="80%" />
+        </p>
+
+        <p>在上图中，<code>PipelineModel</code> 具有与原始 <code>Pipeline</code>相同的步骤数, 但是原始<code>Pipeline</code>中的所有 <code>Estimator</code>都变为<code>Transformer</code>。
+            当在测试数据集上调用 <code>PipelineModel</code>的<code>transform()</code> 方法时，数据将按顺序通过拟合的管道传递。
+            每个步骤的<code>transform()</code> 方法都会更新数据集并将其传递给下一个步骤。</p>
+
+        <p><code>Pipeline</code> 和 <code>PipelineModel</code>确保训练和测试数据经过相同的功能处理步骤。</p>
+
+        <h3 id="details">细节</h3>
+
+        <p><em>DAG <code>Pipeline</code></em>(Pipeline构造出有向无环图): <code>Pipeline</code>的步骤被定义为一个有序的数组。 上面的例子是一个线性的<code>Pipeline</code>即:<code>Pipeline</code>的每个步骤使用的数据都产生于前一个步骤。  只要数据流图形成有向无环图（DAG），就可以创建非线性<code>Pipeline</code>, 此图基于每个阶段的输入和输出列名称（通常指定为参数）隐式指定。 如果管道形成DAG，则必须按拓扑顺序指定阶段。</p>
+
+        <p><em>Runtime checking</em>（运行时检查)）: 由于<code>Pipeline</code>可以对具有不同类型的<code>DataFrame</code>进行操作,
+            因此不能使用编译时类型检查。
+            <code>Pipeline</code> 和 <code>PipelineModel</code>在真正运行<code>Pipeline</code>之前进行运行时检查。这个类型检查通过
+            <code>DataFrame</code> <em>schema</em>, （描述了 <code>DataFrame</code> 列的数据类型）</p>来完成的。
+
+        <p><em>Unique Pipeline stages</em>（管道步骤唯一性): 一个<code>Pipeline</code>的阶段必须是一个唯一实例，比如，相同的实例
+            <code>myHashingTF</code>不能插入到  <code>Pipeline</code> 两次，因为<code>Pipeline</code>的阶段的 ID 必须是唯一的
+            但是，不同的实例 <code>myHashingTF1</code> 和 <code>myHashingTF2</code> （都是 HashingTF 类型）可以放进相同的 Pipeline,只要通过不同的 ID 创建不同的实例.</p>
+
+        <h2 id="parameters">参数</h2>
+
+        <p>MLlib 中的<code>Estimator</code> 和 <code>Transformer</code> 使用统一的API来指定参数。</p>
+
+        <p><code>Param</code> 是一个带有自包含文档的命名参数;
+            <code>ParamMap</code> 是一组（参数，值）对。</p>
+
+        <p>将参数传递给算法有两种主要方法：</p>
+
+        <ol>
+            <li>给实例设置参数,例如,如果 <code>lr</code> 是一个 <code>LogisticRegression</code>实例, 调用 <code>lr.setMaxIter(10)</code> 使 <code>lr.fit()</code> 最多10次迭代。这个 API 类似于
+               <code>spark.mllib</code>包中的 API。</li>
+            <li>传递一个 <code>ParamMap</code> 给 <code>fit()</code> 或者 <code>transform()</code>。<code>ParamMap</code> 的任意参数将会覆盖前面调用实例通过 setter 方法指定的参数。</li>
+        </ol>
+
+        <p>参数属于特定的<code>Estimator</code> 和 <code>Transformer</code>的实例。例如，如果我们有两个
+           <code>LogisticRegression</code> 实例 <code>lr1</code> 和 <code>lr2</code>, 然后我们可以使用指定的<code>maxIter</code> 参数来构建 <code>ParamMap</code>: <code>ParamMap(lr1.maxIter -&gt; 10, lr2.maxIter -&gt; 20)</code>。
+            如果 <code>Pipeline</code> 中存在两个<code>maxIter</code> 参数的算法,这就非常有用。</p>
+
+        <h2 id="ml-persistence-saving-and-loading-pipelines">ML持久化:保存和加载Pipelines</h2>
+
+        <p>通常情况下,将模型或管道保存到磁盘上以供将来使用是值得的。在 Spark 1.6，模型导入导出功能被加入到 Pipeline API。在Spark 2.3,
+            基于DataFrame的API在<code>spark.ml</code> 和 <code>pyspark.ml</code> 都有实现。</p>
+
+        <p>ML持久化适用于Scala，Java和Python。但是，R当前使用的是修改后的格式，因此保存在R中的模型只能加载回R; 这应该在将来修复
+            并在<a href="https://issues.apache.org/jira/browse/SPARK-15572">SPARK-15572</a>进行跟踪。</p>
+
+        <h3 id="backwards-compatibility-for-ml-persistence">ML持久化的向后兼容性</h3>
+
+        <p>通常，MLlib保持ML持久化的向后兼容性。即，如果您在一个版本的Spark中保存ML模型或Pipeline，那么您应该能够将其加载回来并在将来的Spark版本中使用它。但是，极少数例外情况,如下所述。</p>
+
+        <p>模型持久化：Spark版本Y可以加载Spark版本X中使用Apache Spark ML持久化保存模型或管道吗？
+
+        </p>
+
+        <ul>
+            <li>主要版本：没有保证，但是尽力而为。</li>
+            <li>次要和补丁版本：是的; 这些是向后兼容的。</li>
+            <li>关于格式的注意事项：不保证稳定的持久化格式，但模型加载本身设计为向后兼容。</li>
+        </ul>
+
+        <p>模型行为：Spark版本X中的模型或管道在Spark版本Y中的行为是否相同？
+
+        </p>
+
+        <ul>
+            <li>主要版本：没有保证，但是尽力而为。</li>
+            <li>次要和补丁版本：相同的行为，除了错误修复。</li>
+        </ul>
+
+        <p>对于模型持久化和模型行为，在Spark版本发行说明中报告了次要版本或修补程序版本的任何重大更改。如果发行说明中未报告破损，则应将其视为要修复的错误。</p>
+
+        <h1 id="code-examples">代码示例</h1>
+
+        <p>本节给出了说明上述功能的代码示例。有关详细信息，请参阅API文档
+            (<a href="api/scala/index.html#org.apache.spark.ml.package">Scala</a>,
+            <a href="api/java/org/apache/spark/ml/package-summary.html">Java</a>,
+            和 <a href="api/python/pyspark.ml.html">Python</a>)。</p>
+
+        <h2 id="example-estimator-transformer-and-param">示例: Estimator,Transformer和Param</h2>
+
+        <p>这个例子涉及的概念 <code>Estimator</code>, <code>Transformer</code>, 和 <code>Param</code>。</p>
+
+        <div class="codetabs">
+
+            <div data-lang="scala">
+
+                <p>有关API的详细信息，请参阅 <a href="api/scala/index.html#org.apache.spark.ml.Estimator"><code>Estimator</code> Scala 文档</a>,
+                    the <a href="api/scala/index.html#org.apache.spark.ml.Transformer"><code>Transformer</code> Scala 文档</a> 和
+                    the <a href="api/scala/index.html#org.apache.spark.ml.param.Params"><code>Params</code> Scala 文档</a>。</p>
+
+                <div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">org.apache.spark.ml.classification.LogisticRegression</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.ml.linalg.</span><span class="o">{</span><span class="nc">Vector</span><span class="o">,</span> <span class="nc">Vectors</span><span class="o">}</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.ml.param.ParamMap</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.sql.Row</span>
+
+<span class="c1">// 准备训练结集 ; 此集合中存储的是Tuple类型(label, features) 即：带有标签的数据集</span>
+<span class="k">val</span> <span class="n">training</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="o">(</span><span class="nc">Seq</span><span class="o">(</span>
+  <span class="o">(</span><span class="mf">1.0</span><span class="o">,</span> <span class="nc">Vectors</span><span class="o">.</span><span class="n">dense</span><span class="o">(</span><span class="mf">0.0</span><span class="o">,</span> <span class="mf">1.1</span><span class="o">,</span> <span class="mf">0.1</span><span class="o">)),</span>
+  <span class="o">(</span><span class="mf">0.0</span><span class="o">,</span> <span class="nc">Vectors</span><span class="o">.</span><span class="n">dense</span><span class="o">(</span><span class="mf">2.0</span><span class="o">,</span> <span class="mf">1.0</span><span class="o">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="o">)),</span>
+  <span class="o">(</span><span class="mf">0.0</span><span class="o">,</span> <span class="nc">Vectors</span><span class="o">.</span><span class="n">dense</span><span class="o">(</span><span class="mf">2.0</span><span class="o">,</span> <span class="mf">1.3</span><span class="o">,</span> <span class="mf">1.0</span><span class="o">)),</span>
+  <span class="o">(</span><span class="mf">1.0</span><span class="o">,</span> <span class="nc">Vectors</span><span class="o">.</span><span class="n">dense</span><span class="o">(</span><span class="mf">0.0</span><span class="o">,</span> <span class="mf">1.2</span><span class="o">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="o">))</span>
+<span class="o">)).</span><span class="n">toDF</span><span class="o">(</span><span class="s">&quot;label&quot;</span><span class="o">,</span> <span class="s">&quot;features&quot;</span><span class="o">)</span>
+
+<span class="c1">// 创建逻辑回归实例; 此实例是一个 Estimator.</span>
+<span class="k">val</span> <span class="n">lr</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">LogisticRegression</span><span class="o">()</span>
+<span class="c1">// 打印出逻辑回归算法的默认参数.</span>
+<span class="n">println</span><span class="o">(</span><span class="s">s&quot;LogisticRegression parameters:\n </span><span class="si">${</span><span class="n">lr</span><span class="o">.</span><span class="n">explainParams</span><span class="o">()</span><span class="si">}</span><span class="s">\n&quot;</span><span class="o">)</span>
+
+<span class="c1">// 使用setter方法 给逻辑回归算法设置参数.</span>
+<span class="n">lr</span><span class="o">.</span><span class="n">setMaxIter</span><span class="o">(</span><span class="mi">10</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setRegParam</span><span class="o">(</span><span class="mf">0.01</span><span class="o">)</span>
+
+<span class="c1">// 从训练接中学到一个逻辑回归模型 这里使用存储在lr中的参数.</span>
+<span class="k">val</span> <span class="n">model1</span> <span class="k">=</span> <span class="n">lr</span><span class="o">.</span><span class="n">fit</span><span class="o">(</span><span class="n">training</span><span class="o">)</span>
+<span class="c1"> // model1 是一个模型 (即：Estimator生产出一个Transformer),</span>
+<span class="c1">//  我们可以查看fit（）期间使用的参数.</span>
+<span class="c1">// This prints the parameter (name: value) pairs, where names are unique IDs for this</span>
+<span class="c1">// LogisticRegression instance.</span>
+<span class="n">println</span><span class="o">(</span><span class="s">s&quot;Model 1 was fit using parameters: </span><span class="si">${</span><span class="n">model1</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">extractParamMap</span><span class="si">}</span><span class="s">&quot;</span><span class="o">)</span>
+
+<span class="c1">// 我们也可以使用ParamMap指定参数，</span>
+<span class="c1">// 支持多种指定参数的方法</span>
+<span class="k">val</span> <span class="n">paramMap</span> <span class="k">=</span> <span class="nc">ParamMap</span><span class="o">(</span><span class="n">lr</span><span class="o">.</span><span class="n">maxIter</span> <span class="o">-&gt;</span> <span class="mi">20</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">put</span><span class="o">(</span><span class="n">lr</span><span class="o">.</span><span class="n">maxIter</span><span class="o">,</span> <span class="mi">30</span><span class="o">)</span>  <span class="c1">// Specify 1 Param. This overwrites the original maxIter.</span>
+  <span class="o">.</span><span class="n">put</span><span class="o">(</span><span class="n">lr</span><span class="o">.</span><span class="n">regParam</span> <span class="o">-&gt;</span> <span class="mf">0.1</span><span class="o">,</span> <span class="n">lr</span><span class="o">.</span><span class="n">threshold</span> <span class="o">-&gt;</span> <span class="mf">0.55</span><span class="o">)</span>  <span class="c1">// Specify multiple Params.</span>
+
+<span class="c1">// 也可以组合ParamMaps。</span>
+<span class="k">val</span> <span class="n">paramMap2</span> <span class="k">=</span> <span class="nc">ParamMap</span><span class="o">(</span><span class="n">lr</span><span class="o">.</span><span class="n">probabilityCol</span> <span class="o">-&gt;</span> <span class="s">&quot;myProbability&quot;</span><span class="o">)</span>  <span class="c1">// Change output column name.</span>
+<span class="k">val</span> <span class="n">paramMapCombined</span> <span class="k">=</span> <span class="n">paramMap</span> <span class="o">++</span> <span class="n">paramMap2</span>
+
+<span class="c1">// 现在使用paramMapCombined参数学习一个新模型。</span>
+<span class="c1">// paramMapCombined参数会覆盖之前使用lr.set* 方法设置的所有的参数。</span>
+<span class="k">val</span> <span class="n">model2</span> <span class="k">=</span> <span class="n">lr</span><span class="o">.</span><span class="n">fit</span><span class="o">(</span><span class="n">training</span><span class="o">,</span> <span class="n">paramMapCombined</span><span class="o">)</span>
+<span class="n">println</span><span class="o">(</span><span class="s">s&quot;Model 2 was fit using parameters: </span><span class="si">${</span><span class="n">model2</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">extractParamMap</span><span class="si">}</span><span class="s">&quot;</span><span class="o">)</span>
+
+<span class="c1">// 准备测试集</span>
+<span class="k">val</span> <span class="n">test</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="o">(</span><span class="nc">Seq</span><span class="o">(</span>
+  <span class="o">(</span><span class="mf">1.0</span><span class="o">,</span> <span class="nc">Vectors</span><span class="o">.</span><span class="n">dense</span><span class="o">(-</span><span class="mf">1.0</span><span class="o">,</span> <span class="mf">1.5</span><span class="o">,</span> <span class="mf">1.3</span><span class="o">)),</span>
+  <span class="o">(</span><span class="mf">0.0</span><span class="o">,</span> <span class="nc">Vectors</span><span class="o">.</span><span class="n">dense</span><span class="o">(</span><span class="mf">3.0</span><span class="o">,</span> <span class="mf">2.0</span><span class="o">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="o">)),</span>
+  <span class="o">(</span><span class="mf">1.0</span><span class="o">,</span> <span class="nc">Vectors</span><span class="o">.</span><span class="n">dense</span><span class="o">(</span><span class="mf">0.0</span><span class="o">,</span> <span class="mf">2.2</span><span class="o">,</span> <span class="o">-</span><span class="mf">1.5</span><span class="o">))</span>
+<span class="o">)).</span><span class="n">toDF</span><span class="o">(</span><span class="s">&quot;label&quot;</span><span class="o">,</span> <span class="s">&quot;features&quot;</span><span class="o">)</span>
+
+<span class="c1">// 使用Transformer.transform（）方法对测试数据进行预测.</span>
+<span class="c1">// LogisticRegression.transform仅使用“features”列.</span>
+<span class="c1">// 请注意，model2.transform（）输出'myProbability'列而不是通常的列.</span>
+<span class="c1">// 'probability'列，因为我们先前重命名了lr.probabilityCol参数.</span>
+<span class="n">model2</span><span class="o">.</span><span class="n">transform</span><span class="o">(</span><span class="n">test</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="s">&quot;features&quot;</span><span class="o">,</span> <span class="s">&quot;label&quot;</span><span class="o">,</span> <span class="s">&quot;myProbability&quot;</span><span class="o">,</span> <span class="s">&quot;prediction&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">collect</span><span class="o">()</span>
+  <span class="o">.</span><span class="n">foreach</span> <span class="o">{</span> <span class="k">case</span> <span class="nc">Row</span><span class="o">(</span><span class="n">features</span><span class="k">:</span> <span class="kt">Vector</span><span class="o">,</span> <span class="n">label</span><span class="k">:</span> <span class="kt">Double</span><span class="o">,</span> <span class="n">prob</span><span class="k">:</span> <span class="kt">Vector</span><span class="o">,</span> <span class="n">prediction</span><span class="k">:</span> <span class="kt">Double</span><span class="o">)</span> <span class="k">=&gt;</span>
+    <span class="n">println</span><span class="o">(</span><span class="s">s&quot;(</span><span class="si">$features</span><span class="s">, </span><span class="si">$label</span><span class="s">) -&gt; prob=</span><span class="si">$prob</span><span class="s">, prediction=</span><span class="si">$prediction</span><span class="s">&quot;</span><span class="o">)</span>
+  <span class="o">}</span>
+</pre></div>
+                <div><small>在Spark repo中的"examples/src/main/scala/org/apache/spark/examples/ml/EstimatorTransformerParamExample.scala" 中找到完整的示例代码。</small></div>
+            </div>
+
+            <div data-lang="java">
+
+                <p>Refer to the <a href="api/java/org/apache/spark/ml/Estimator.html"><code>Estimator</code> Java docs</a>,
+                    the <a href="api/java/org/apache/spark/ml/Transformer.html"><code>Transformer</code> Java docs</a> and
+                    the <a href="api/java/org/apache/spark/ml/param/Params.html"><code>Params</code> Java docs</a> for details on the API.</p>
+
+                <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">java.util.Arrays</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.spark.ml.classification.LogisticRegression</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.ml.classification.LogisticRegressionModel</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.ml.linalg.VectorUDT</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.ml.linalg.Vectors</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.ml.param.ParamMap</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.sql.Dataset</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.sql.Row</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.sql.RowFactory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.sql.types.DataTypes</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.sql.types.Metadata</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.sql.types.StructField</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.sql.types.StructType</span><span class="o">;</span>
+
+<span class="c1">// Prepare training data.</span>
+<span class="n">List</span><span class="o">&lt;</span><span class="n">Row</span><span class="o">&gt;</span> <span class="n">dataTraining</span> <span class="o">=</span> <span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span>
+    <span class="n">RowFactory</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="mf">1.0</span><span class="o">,</span> <span class="n">Vectors</span><span class="o">.</span><span class="na">dense</span><span class="o">(</span><span class="mf">0.0</span><span class="o">,</span> <span class="mf">1.1</span><span class="o">,</span> <span class="mf">0.1</span><span class="o">)),</span>
+    <span class="n">RowFactory</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="mf">0.0</span><span class="o">,</span> <span class="n">Vectors</span><span class="o">.</span><span class="na">dense</span><span class="o">(</span><span class="mf">2.0</span><span class="o">,</span> <span class="mf">1.0</span><span class="o">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="o">)),</span>
+    <span class="n">RowFactory</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="mf">0.0</span><span class="o">,</span> <span class="n">Vectors</span><span class="o">.</span><span class="na">dense</span><span class="o">(</span><span class="mf">2.0</span><span class="o">,</span> <span class="mf">1.3</span><span class="o">,</span> <span class="mf">1.0</span><span class="o">)),</span>
+    <span class="n">RowFactory</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="mf">1.0</span><span class="o">,</span> <span class="n">Vectors</span><span class="o">.</span><span class="na">dense</span><span class="o">(</span><span class="mf">0.0</span><span class="o">,</span> <span class="mf">1.2</span><span class="o">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="o">))</span>
+<span class="o">);</span>
+<span class="n">StructType</span> <span class="n">schema</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StructType</span><span class="o">(</span><span class="k">new</span> <span class="n">StructField</span><span class="o">[]{</span>
+    <span class="k">new</span> <span class="n">StructField</span><span class="o">(</span><span class="s">&quot;label&quot;</span><span class="o">,</span> <span class="n">DataTypes</span><span class="o">.</span><span class="na">DoubleType</span><span class="o">,</span> <span class="kc">false</span><span class="o">,</span> <span class="n">Metadata</span><span class="o">.</span><span class="na">empty</span><span class="o">()),</span>
+    <span class="k">new</span> <span class="n">StructField</span><span class="o">(</span><span class="s">&quot;features&quot;</span><span class="o">,</span> <span class="k">new</span> <span class="n">VectorUDT</span><span class="o">(),</span> <span class="kc">false</span><span class="o">,</span> <span class="n">Metadata</span><span class="o">.</span><span class="na">empty</span><span class="o">())</span>
+<span class="o">});</span>
+<span class="n">Dataset</span><span class="o">&lt;</span><span class="n">Row</span><span class="o">&gt;</span> <span class="n">training</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="na">createDataFrame</span><span class="o">(</span><span class="n">dataTraining</span><span class="o">,</span> <span class="n">schema</span><span class="o">);</span>
+
+<span class="c1">// Create a LogisticRegression instance. This instance is an Estimator.</span>
+<span class="n">LogisticRegression</span> <span class="n">lr</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LogisticRegression</span><span class="o">();</span>
+<span class="c1">// Print out the parameters, documentation, and any default values.</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;LogisticRegression parameters:\n&quot;</span> <span class="o">+</span> <span class="n">lr</span><span class="o">.</span><span class="na">explainParams</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot;\n&quot;</span><span class="o">);</span>
+
+<span class="c1">// We may set parameters using setter methods.</span>
+<span class="n">lr</span><span class="o">.</span><span class="na">setMaxIter</span><span class="o">(</span><span class="mi">10</span><span class="o">).</span><span class="na">setRegParam</span><span class="o">(</span><span class="mf">0.01</span><span class="o">);</span>
+
+<span class="c1">// Learn a LogisticRegression model. This uses the parameters stored in lr.</span>
+<span class="n">LogisticRegressionModel</span> <span class="n">model1</span> <span class="o">=</span> <span class="n">lr</span><span class="o">.</span><span class="na">fit</span><span class="o">(</span><span class="n">training</span><span class="o">);</span>
+<span class="c1">// Since model1 is a Model (i.e., a Transformer produced by an Estimator),</span>
+<span class="c1">// we can view the parameters it used during fit().</span>
+<span class="c1">// This prints the parameter (name: value) pairs, where names are unique IDs for this</span>
+<span class="c1">// LogisticRegression instance.</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Model 1 was fit using parameters: &quot;</span> <span class="o">+</span> <span class="n">model1</span><span class="o">.</span><span class="na">parent</span><span class="o">().</span><span class="na">extractParamMap</span><span class="o">());</span>
+
+<span class="c1">// We may alternatively specify parameters using a ParamMap.</span>
+<span class="n">ParamMap</span> <span class="n">paramMap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ParamMap</span><span class="o">()</span>
+  <span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">lr</span><span class="o">.</span><span class="na">maxIter</span><span class="o">().</span><span class="na">w</span><span class="o">(</span><span class="mi">20</span><span class="o">))</span>  <span class="c1">// Specify 1 Param.</span>
+  <span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">lr</span><span class="o">.</span><span class="na">maxIter</span><span class="o">(),</span> <span class="mi">30</span><span class="o">)</span>  <span class="c1">// This overwrites the original maxIter.</span>
+  <span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">lr</span><span class="o">.</span><span class="na">regParam</span><span class="o">().</span><span class="na">w</span><span class="o">(</span><span class="mf">0.1</span><span class="o">),</span> <span class="n">lr</span><span class="o">.</span><span class="na">threshold</span><span class="o">().</span><span class="na">w</span><span class="o">(</span><span class="mf">0.55</span><span class="o">));</span>  <span class="c1">// Specify multiple Params.</span>
+
+<span class="c1">// One can also combine ParamMaps.</span>
+<span class="n">ParamMap</span> <span class="n">paramMap2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ParamMap</span><span class="o">()</span>
+  <span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">lr</span><span class="o">.</span><span class="na">probabilityCol</span><span class="o">().</span><span class="na">w</span><span class="o">(</span><span class="s">&quot;myProbability&quot;</span><span class="o">));</span>  <span class="c1">// Change output column name</span>
+<span class="n">ParamMap</span> <span class="n">paramMapCombined</span> <span class="o">=</span> <span class="n">paramMap</span><span class="o">.</span><span class="na">$plus$plus</span><span class="o">(</span><span class="n">paramMap2</span><span class="o">);</span>
+
+<span class="c1">// Now learn a new model using the paramMapCombined parameters.</span>
+<span class="c1">// paramMapCombined overrides all parameters set earlier via lr.set* methods.</span>
+<span class="n">LogisticRegressionModel</span> <span class="n">model2</span> <span class="o">=</span> <span class="n">lr</span><span class="o">.</span><span class="na">fit</span><span class="o">(</span><span class="n">training</span><span class="o">,</span> <span class="n">paramMapCombined</span><span class="o">);</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Model 2 was fit using parameters: &quot;</span> <span class="o">+</span> <span class="n">model2</span><span class="o">.</span><span class="na">parent</span><span class="o">().</span><span class="na">extractParamMap</span><span class="o">());</span>
+
+<span class="c1">// Prepare test documents.</span>
+<span class="n">List</span><span class="o">&lt;</span><span class="n">Row</span><span class="o">&gt;</span> <span class="n">dataTest</span> <span class="o">=</span> <span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span>
+    <span class="n">RowFactory</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="mf">1.0</span><span class="o">,</span> <span class="n">Vectors</span><span class="o">.</span><span class="na">dense</span><span class="o">(-</span><span class="mf">1.0</span><span class="o">,</span> <span class="mf">1.5</span><span class="o">,</span> <span class="mf">1.3</span><span class="o">)),</span>
+    <span class="n">RowFactory</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="mf">0.0</span><span class="o">,</span> <span class="n">Vectors</span><span class="o">.</span><span class="na">dense</span><span class="o">(</span><span class="mf">3.0</span><span class="o">,</span> <span class="mf">2.0</span><span class="o">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="o">)),</span>
+    <span class="n">RowFactory</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="mf">1.0</span><span class="o">,</span> <span class="n">Vectors</span><span class="o">.</span><span class="na">dense</span><span class="o">(</span><span class="mf">0.0</span><span class="o">,</span> <span class="mf">2.2</span><span class="o">,</span> <span class="o">-</span><span class="mf">1.5</span><span class="o">))</span>
+<span class="o">);</span>
+<span class="n">Dataset</span><span class="o">&lt;</span><span class="n">Row</span><span class="o">&gt;</span> <span class="n">test</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="na">createDataFrame</span><span class="o">(</span><span class="n">dataTest</span><span class="o">,</span> <span class="n">schema</span><span class="o">);</span>
+
+<span class="c1">// Make predictions on test documents using the Transformer.transform() method.</span>
+<span class="c1">// LogisticRegression.transform will only use the &#39;features&#39; column.</span>
+<span class="c1">// Note that model2.transform() outputs a &#39;myProbability&#39; column instead of the usual</span>
+<span class="c1">// &#39;probability&#39; column since we renamed the lr.probabilityCol parameter previously.</span>
+<span class="n">Dataset</span><span class="o">&lt;</span><span class="n">Row</span><span class="o">&gt;</span> <span class="n">results</span> <span class="o">=</span> <span class="n">model2</span><span class="o">.</span><span class="na">transform</span><span class="o">(</span><span class="n">test</span><span class="o">);</span>
+<span class="n">Dataset</span><span class="o">&lt;</span><span class="n">Row</span><span class="o">&gt;</span> <span class="n">rows</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="na">select</span><span class="o">(</span><span class="s">&quot;features&quot;</span><span class="o">,</span> <span class="s">&quot;label&quot;</span><span class="o">,</span> <span class="s">&quot;myProbability&quot;</span><span class="o">,</span> <span class="s">&quot;prediction&quot;</span><span class="o">);</span>
+<span class="k">for</span> <span class="o">(</span><span class="n">Row</span> <span class="n">r</span><span class="o">:</span> <span class="n">rows</span><span class="o">.</span><span class="na">collectAsList</span><span class="o">())</span> <span class="o">{</span>
+  <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;(&quot;</span> <span class="o">+</span> <span class="n">r</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot;, &quot;</span> <span class="o">+</span> <span class="n">r</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot;) -&gt; prob=&quot;</span> <span class="o">+</span> <span class="n">r</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+    <span class="o">+</span> <span class="s">&quot;, prediction=&quot;</span> <span class="o">+</span> <span class="n">r</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">3</span><span class="o">));</span>
+<span class="o">}</span>
+</pre></div>
+                <div><small>Find full example code at "examples/src/main/java/org/apache/spark/examples/ml/JavaEstimatorTransformerParamExample.java" in the Spark repo.</small></div>
+            </div>
+
+            <div data-lang="python">
+
+                <p>Refer to the <a href="api/python/pyspark.ml.html#pyspark.ml.Estimator"><code>Estimator</code> Python docs</a>,
+                    the <a href="api/python/pyspark.ml.html#pyspark.ml.Transformer"><code>Transformer</code> Python docs</a> and
+                    the <a href="api/python/pyspark.ml.html#pyspark.ml.param.Params"><code>Params</code> Python docs</a> for more details on the API.</p>
+
+                <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.linalg</span> <span class="kn">import</span> <span class="n">Vectors</span>
+<span class="kn">from</span> <span class="nn">pyspark.ml.classification</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+
+<span class="c1"># Prepare training data from a list of (label, features) tuples.</span>
+<span class="n">training</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">([</span>
+    <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">Vectors</span><span class="o">.</span><span class="n">dense</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">])),</span>
+    <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">Vectors</span><span class="o">.</span><span class="n">dense</span><span class="p">([</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">])),</span>
+    <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">Vectors</span><span class="o">.</span><span class="n">dense</span><span class="p">([</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])),</span>
+    <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">Vectors</span><span class="o">.</span><span class="n">dense</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">]))],</span> <span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="s2">&quot;features&quot;</span><span class="p">])</span>
+
+<span class="c1"># Create a LogisticRegression instance. This instance is an Estimator.</span>
+<span class="n">lr</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">maxIter</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">regParam</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="c1"># Print out the parameters, documentation, and any default values.</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;LogisticRegression parameters:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">lr</span><span class="o">.</span><span class="n">explainParams</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Learn a LogisticRegression model. This uses the parameters stored in lr.</span>
+<span class="n">model1</span> <span class="o">=</span> <span class="n">lr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">training</span><span class="p">)</span>
+
+<span class="c1"># Since model1 is a Model (i.e., a transformer produced by an Estimator),</span>
+<span class="c1"># we can view the parameters it used during fit().</span>
+<span class="c1"># This prints the parameter (name: value) pairs, where names are unique IDs for this</span>
+<span class="c1"># LogisticRegression instance.</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Model 1 was fit using parameters: &quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">model1</span><span class="o">.</span><span class="n">extractParamMap</span><span class="p">())</span>
+
+<span class="c1"># We may alternatively specify parameters using a Python dictionary as a paramMap</span>
+<span class="n">paramMap</span> <span class="o">=</span> <span class="p">{</span><span class="n">lr</span><span class="o">.</span><span class="n">maxIter</span><span class="p">:</span> <span class="mi">20</span><span class="p">}</span>
+<span class="n">paramMap</span><span class="p">[</span><span class="n">lr</span><span class="o">.</span><span class="n">maxIter</span><span class="p">]</span> <span class="o">=</span> <span class="mi">30</span>  <span class="c1"># Specify 1 Param, overwriting the original maxIter.</span>
+<span class="n">paramMap</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">lr</span><span class="o">.</span><span class="n">regParam</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">lr</span><span class="o">.</span><span class="n">threshold</span><span class="p">:</span> <span class="mf">0.55</span><span class="p">})</span>  <span class="c1"># Specify multiple Params.</span>
+
+<span class="c1"># You can combine paramMaps, which are python dictionaries.</span>
+<span class="n">paramMap2</span> <span class="o">=</span> <span class="p">{</span><span class="n">lr</span><span class="o">.</span><span class="n">probabilityCol</span><span class="p">:</span> <span class="s2">&quot;myProbability&quot;</span><span class="p">}</span>  <span class="c1"># Change output column name</span>
+<span class="n">paramMapCombined</span> <span class="o">=</span> <span class="n">paramMap</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">paramMapCombined</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">paramMap2</span><span class="p">)</span>
+
+<span class="c1"># Now learn a new model using the paramMapCombined parameters.</span>
+<span class="c1"># paramMapCombined overrides all parameters set earlier via lr.set* methods.</span>
+<span class="n">model2</span> <span class="o">=</span> <span class="n">lr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">training</span><span class="p">,</span> <span class="n">paramMapCombined</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Model 2 was fit using parameters: &quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">model2</span><span class="o">.</span><span class="n">extractParamMap</span><span class="p">())</span>
+
+<span class="c1"># Prepare test data</span>
+<span class="n">test</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">([</span>
+    <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">Vectors</span><span class="o">.</span><span class="n">dense</span><span class="p">([</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.3</span><span class="p">])),</span>
+    <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">Vectors</span><span class="o">.</span><span class="n">dense</span><span class="p">([</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">])),</span>
+    <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">Vectors</span><span class="o">.</span><span class="n">dense</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.5</span><span class="p">]))],</span> <span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="s2">&quot;features&quot;</span><span class="p">])</span>
+
+<span class="c1"># Make predictions on test data using the Transformer.transform() method.</span>
+<span class="c1"># LogisticRegression.transform will only use the &#39;features&#39; column.</span>
+<span class="c1"># Note that model2.transform() outputs a &quot;myProbability&quot; column instead of the usual</span>
+<span class="c1"># &#39;probability&#39; column since we renamed the lr.probabilityCol parameter previously.</span>
+<span class="n">prediction</span> <span class="o">=</span> <span class="n">model2</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">prediction</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;features&quot;</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="s2">&quot;myProbability&quot;</span><span class="p">,</span> <span class="s2">&quot;prediction&quot;</span><span class="p">)</span> \
+    <span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;features=</span><span class="si">%s</span><span class="s2">, label=</span><span class="si">%s</span><span class="s2"> -&gt; prob=</span><span class="si">%s</span><span class="s2">, prediction=</span><span class="si">%s</span><span class="s2">&quot;</span>
+          <span class="o">%</span> <span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">features</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">myProbability</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">prediction</span><span class="p">))</span>
+</pre></div>
+                <div><small>Find full example code at "examples/src/main/python/ml/estimator_transformer_param_example.py" in the Spark repo.</small></div>
+            </div>
+
+        </div>
+
+        <h2 id="example-pipeline">示例: Pipeline</h2>
+
+        <p>该示例遵循<code>Pipeline</code> 上图中所示的简单文档。</p>
+
+        <div class="codetabs">
+
+            <div data-lang="scala">
+
+                <p>有关API的详细信息，请参阅<a href="api/scala/index.html#org.apache.spark.ml.Pipeline"><code>Pipeline</code> Scala 文档</a>。</p>
+
+                <div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">org.apache.spark.ml.</span><span class="o">{</span><span class="nc">Pipeline</span><span class="o">,</span> <span class="nc">PipelineModel</span><span class="o">}</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.ml.classification.LogisticRegression</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.ml.feature.</span><span class="o">{</span><span class="nc">HashingTF</span><span class="o">,</span> <span class="nc">Tokenizer</span><span class="o">}</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.ml.linalg.Vector</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.sql.Row</span>
+
+<span class="c1">// Prepare training documents from a list of (id, text, label) tuples.</span>
+<span class="k">val</span> <span class="n">training</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="o">(</span><span class="nc">Seq</span><span class="o">(</span>
+  <span class="o">(</span><span class="mi">0L</span><span class="o">,</span> <span class="s">&quot;a b c d e spark&quot;</span><span class="o">,</span> <span class="mf">1.0</span><span class="o">),</span>
+  <span class="o">(</span><span class="mi">1L</span><span class="o">,</span> <span class="s">&quot;b d&quot;</span><span class="o">,</span> <span class="mf">0.0</span><span class="o">),</span>
+  <span class="o">(</span><span class="mi">2L</span><span class="o">,</span> <span class="s">&quot;spark f g h&quot;</span><span class="o">,</span> <span class="mf">1.0</span><span class="o">),</span>
+  <span class="o">(</span><span class="mi">3L</span><span class="o">,</span> <span class="s">&quot;hadoop mapreduce&quot;</span><span class="o">,</span> <span class="mf">0.0</span><span class="o">)</span>
+<span class="o">)).</span><span class="n">toDF</span><span class="o">(</span><span class="s">&quot;id&quot;</span><span class="o">,</span> <span class="s">&quot;text&quot;</span><span class="o">,</span> <span class="s">&quot;label&quot;</span><span class="o">)</span>
+
+<span class="c1">// Configure an ML pipeline, which consists of three stages: tokenizer, hashingTF, and lr.</span>
+<span class="k">val</span> <span class="n">tokenizer</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Tokenizer</span><span class="o">()</span>
+  <span class="o">.</span><span class="n">setInputCol</span><span class="o">(</span><span class="s">&quot;text&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;words&quot;</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">hashingTF</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">HashingTF</span><span class="o">()</span>
+  <span class="o">.</span><span class="n">setNumFeatures</span><span class="o">(</span><span class="mi">1000</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setInputCol</span><span class="o">(</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">getOutputCol</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;features&quot;</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">lr</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">LogisticRegression</span><span class="o">()</span>
+  <span class="o">.</span><span class="n">setMaxIter</span><span class="o">(</span><span class="mi">10</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setRegParam</span><span class="o">(</span><span class="mf">0.001</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">pipeline</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Pipeline</span><span class="o">()</span>
+  <span class="o">.</span><span class="n">setStages</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="n">tokenizer</span><span class="o">,</span> <span class="n">hashingTF</span><span class="o">,</span> <span class="n">lr</span><span class="o">))</span>
+
+<span class="c1">// Fit the pipeline to training documents.</span>
+<span class="k">val</span> <span class="n">model</span> <span class="k">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">fit</span><span class="o">(</span><span class="n">training</span><span class="o">)</span>
+
+<span class="c1">// Now we can optionally save the fitted pipeline to disk</span>
+<span class="n">model</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">overwrite</span><span class="o">().</span><span class="n">save</span><span class="o">(</span><span class="s">&quot;/tmp/spark-logistic-regression-model&quot;</span><span class="o">)</span>
+
+<span class="c1">// We can also save this unfit pipeline to disk</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">overwrite</span><span class="o">().</span><span class="n">save</span><span class="o">(</span><span class="s">&quot;/tmp/unfit-lr-model&quot;</span><span class="o">)</span>
+
+<span class="c1">// And load it back in during production</span>
+<span class="k">val</span> <span class="n">sameModel</span> <span class="k">=</span> <span class="nc">PipelineModel</span><span class="o">.</span><span class="n">load</span><span class="o">(</span><span class="s">&quot;/tmp/spark-logistic-regression-model&quot;</span><span class="o">)</span>
+
+<span class="c1">// Prepare test documents, which are unlabeled (id, text) tuples.</span>
+<span class="k">val</span> <span class="n">test</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="o">(</span><span class="nc">Seq</span><span class="o">(</span>
+  <span class="o">(</span><span class="mi">4L</span><span class="o">,</span> <span class="s">&quot;spark i j k&quot;</span><span class="o">),</span>
+  <span class="o">(</span><span class="mi">5L</span><span class="o">,</span> <span class="s">&quot;l m n&quot;</span><span class="o">),</span>
+  <span class="o">(</span><span class="mi">6L</span><span class="o">,</span> <span class="s">&quot;spark hadoop spark&quot;</span><span class="o">),</span>
+  <span class="o">(</span><span class="mi">7L</span><span class="o">,</span> <span class="s">&quot;apache hadoop&quot;</span><span class="o">)</span>
+<span class="o">)).</span><span class="n">toDF</span><span class="o">(</span><span class="s">&quot;id&quot;</span><span class="o">,</span> <span class="s">&quot;text&quot;</span><span class="o">)</span>
+
+<span class="c1">// Make predictions on test documents.</span>
+<span class="n">model</span><span class="o">.</span><span class="n">transform</span><span class="o">(</span><span class="n">test</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="s">&quot;id&quot;</span><span class="o">,</span> <span class="s">&quot;text&quot;</span><span class="o">,</span> <span class="s">&quot;probability&quot;</span><span class="o">,</span> <span class="s">&quot;prediction&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">collect</span><span class="o">()</span>
+  <span class="o">.</span><span class="n">foreach</span> <span class="o">{</span> <span class="k">case</span> <span class="nc">Row</span><span class="o">(</span><span class="n">id</span><span class="k">:</span> <span class="kt">Long</span><span class="o">,</span> <span class="n">text</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">prob</span><span class="k">:</span> <span class="kt">Vector</span><span class="o">,</span> <span class="n">prediction</span><span class="k">:</span> <span class="kt">Double</span><span class="o">)</span> <span class="k">=&gt;</span>
+    <span class="n">println</span><span class="o">(</span><span class="s">s&quot;(</span><span class="si">$id</span><span class="s">, </span><span class="si">$text</span><span class="s">) --&gt; prob=</span><span class="si">$prob</span><span class="s">, prediction=</span><span class="si">$prediction</span><span class="s">&quot;</span><span class="o">)</span>
+  <span class="o">}</span>
+</pre></div>
+                <div><small>在Spark repo中的"examples/src/main/scala/org/apache/spark/examples/ml/PipelineExample.scala" 中找到完整的示例代码。</small></div>
+            </div>
+
+            <div data-lang="java">
+
+                <p>Refer to the <a href="api/java/org/apache/spark/ml/Pipeline.html"><code>Pipeline</code> Java docs</a> for details on the API.</p>
+
+                <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">java.util.Arrays</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.spark.ml.Pipeline</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.ml.PipelineModel</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.ml.PipelineStage</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.ml.classification.LogisticRegression</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.ml.feature.HashingTF</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.ml.feature.Tokenizer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.sql.Dataset</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.spark.sql.Row</span><span class="o">;</span>
+
+<span class="c1">// Prepare training documents, which are labeled.</span>
+<span class="n">Dataset</span><span class="o">&lt;</span><span class="n">Row</span><span class="o">&gt;</span> <span class="n">training</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="na">createDataFrame</span><span class="o">(</span><span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span>
+  <span class="k">new</span> <span class="n">JavaLabeledDocument</span><span class="o">(</span><span class="mi">0</span><span class="n">L</span><span class="o">,</span> <span class="s">&quot;a b c d e spark&quot;</span><span class="o">,</span> <span class="mf">1.0</span><span class="o">),</span>
+  <span class="k">new</span> <span class="n">JavaLabeledDocument</span><span class="o">(</span><span class="mi">1L</span><span class="o">,</span> <span class="s">&quot;b d&quot;</span><span class="o">,</span> <span class="mf">0.0</span><span class="o">),</span>
+  <span class="k">new</span> <span class="n">JavaLabeledDocument</span><span class="o">(</span><span class="mi">2L</span><span class="o">,</span> <span class="s">&quot;spark f g h&quot;</span><span class="o">,</span> <span class="mf">1.0</span><span class="o">),</span>
+  <span class="k">new</span> <span class="n">JavaLabeledDocument</span><span class="o">(</span><span class="mi">3L</span><span class="o">,</span> <span class="s">&quot;hadoop mapreduce&quot;</span><span class="o">,</span> <span class="mf">0.0</span><span class="o">)</span>
+<span class="o">),</span> <span class="n">JavaLabeledDocument</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+<span class="c1">// Configure an ML pipeline, which consists of three stages: tokenizer, hashingTF, and lr.</span>
+<span class="n">Tokenizer</span> <span class="n">tokenizer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Tokenizer</span><span class="o">()</span>
+  <span class="o">.</span><span class="na">setInputCol</span><span class="o">(</span><span class="s">&quot;text&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">setOutputCol</span><span class="o">(</span><span class="s">&quot;words&quot;</span><span class="o">);</span>
+<span class="n">HashingTF</span> <span class="n">hashingTF</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashingTF</span><span class="o">()</span>
+  <span class="o">.</span><span class="na">setNumFeatures</span><span class="o">(</span><span class="mi">1000</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">setInputCol</span><span class="o">(</span><span class="n">tokenizer</span><span class="o">.</span><span class="na">getOutputCol</span><span class="o">())</span>
+  <span class="o">.</span><span class="na">setOutputCol</span><span class="o">(</span><span class="s">&quot;features&quot;</span><span class="o">);</span>
+<span class="n">LogisticRegression</span> <span class="n">lr</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LogisticRegression</span><span class="o">()</span>
+  <span class="o">.</span><span class="na">setMaxIter</span><span class="o">(</span><span class="mi">10</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">setRegParam</span><span class="o">(</span><span class="mf">0.001</span><span class="o">);</span>
+<span class="n">Pipeline</span> <span class="n">pipeline</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Pipeline</span><span class="o">()</span>
+  <span class="o">.</span><span class="na">setStages</span><span class="o">(</span><span class="k">new</span> <span class="n">PipelineStage</span><span class="o">[]</span> <span class="o">{</span><span class="n">tokenizer</span><span class="o">,</span> <span class="n">hashingTF</span><span class="o">,</span> <span class="n">lr</span><span class="o">});</span>
+
+<span class="c1">// Fit the pipeline to training documents.</span>
+<span class="n">PipelineModel</span> <span class="n">model</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="na">fit</span><span class="o">(</span><span class="n">training</span><span class="o">);</span>
+
+<span class="c1">// Prepare test documents, which are unlabeled.</span>
+<span class="n">Dataset</span><span class="o">&lt;</span><span class="n">Row</span><span class="o">&gt;</span> <span class="n">test</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="na">createDataFrame</span><span class="o">(</span><span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span>
+  <span class="k">new</span> <span class="n">JavaDocument</span><span class="o">(</span><span class="mi">4L</span><span class="o">,</span> <span class="s">&quot;spark i j k&quot;</span><span class="o">),</span>
+  <span class="k">new</span> <span class="n">JavaDocument</span><span class="o">(</span><span class="mi">5L</span><span class="o">,</span> <span class="s">&quot;l m n&quot;</span><span class="o">),</span>
+  <span class="k">new</span> <span class="n">JavaDocument</span><span class="o">(</span><span class="mi">6L</span><span class="o">,</span> <span class="s">&quot;spark hadoop spark&quot;</span><span class="o">),</span>
+  <span class="k">new</span> <span class="n">JavaDocument</span><span class="o">(</span><span class="mi">7L</span><span class="o">,</span> <span class="s">&quot;apache hadoop&quot;</span><span class="o">)</span>
+<span class="o">),</span> <span class="n">JavaDocument</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+<span class="c1">// Make predictions on test documents.</span>
+<span class="n">Dataset</span><span class="o">&lt;</span><span class="n">Row</span><span class="o">&gt;</span> <span class="n">predictions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="na">transform</span><span class="o">(</span><span class="n">test</span><span class="o">);</span>
+<span class="k">for</span> <span class="o">(</span><span class="n">Row</span> <span class="n">r</span> <span class="o">:</span> <span class="n">predictions</span><span class="o">.</span><span class="na">select</span><span class="o">(</span><span class="s">&quot;id&quot;</span><span class="o">,</span> <span class="s">&quot;text&quot;</span><span class="o">,</span> <span class="s">&quot;probability&quot;</span><span class="o">,</span> <span class="s">&quot;prediction&quot;</span><span class="o">).</span><span class="na">collectAsList</span><span class="o">())</span> <span class="o">{</span>
+  <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;(&quot;</span> <span class="o">+</span> <span class="n">r</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot;, &quot;</span> <span class="o">+</span> <span class="n">r</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot;) --&gt; prob=&quot;</span> <span class="o">+</span> <span class="n">r</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+    <span class="o">+</span> <span class="s">&quot;, prediction=&quot;</span> <span class="o">+</span> <span class="n">r</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">3</span><span class="o">));</span>
+<span class="o">}</span>
+</pre></div>
+                <div><small>Find full example code at "examples/src/main/java/org/apache/spark/examples/ml/JavaPipelineExample.java" in the Spark repo.</small></div>
+            </div>
+
+            <div data-lang="python">
+
+                <p>Refer to the <a href="api/python/pyspark.ml.html#pyspark.ml.Pipeline"><code>Pipeline</code> Python docs</a> for more details on the API.</p>
+
+                <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml</span> <span class="kn">import</span> <span class="n">Pipeline</span>
+<span class="kn">from</span> <span class="nn">pyspark.ml.classification</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">HashingTF</span><span class="p">,</span> <span class="n">Tokenizer</span>
+
+<span class="c1"># Prepare training documents from a list of (id, text, label) tuples.</span>
+<span class="n">training</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">([</span>
+    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;a b c d e spark&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;b d&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;spark f g h&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;hadoop mapreduce&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+<span class="p">],</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">])</span>
+
+<span class="c1"># Configure an ML pipeline, which consists of three stages: tokenizer, hashingTF, and lr.</span>
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="p">(</span><span class="n">inputCol</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="n">outputCol</span><span class="o">=</span><span class="s2">&quot;words&quot;</span><span class="p">)</span>
+<span class="n">hashingTF</span> <span class="o">=</span> <span class="n">HashingTF</span><span class="p">(</span><span class="n">inputCol</span><span class="o">=</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">getOutputCol</span><span class="p">(),</span> <span class="n">outputCol</span><span class="o">=</span><span class="s2">&quot;features&quot;</span><span class="p">)</span>
+<span class="n">lr</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">maxIter</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">regParam</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">stages</span><span class="o">=</span><span class="p">[</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">hashingTF</span><span class="p">,</span> <span class="n">lr</span><span class="p">])</span>
+
+<span class="c1"># Fit the pipeline to training documents.</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">training</span><span class="p">)</span>
+
+<span class="c1"># Prepare test documents, which are unlabeled (id, text) tuples.</span>
+<span class="n">test</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">([</span>
+    <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;spark i j k&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;l m n&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;spark hadoop spark&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="s2">&quot;apache hadoop&quot;</span><span class="p">)</span>
+<span class="p">],</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">])</span>
+
+<span class="c1"># Make predictions on test documents and print columns of interest.</span>
+<span class="n">prediction</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+<span class="n">selected</span> <span class="o">=</span> <span class="n">prediction</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="s2">&quot;probability&quot;</span><span class="p">,</span> <span class="s2">&quot;prediction&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">selected</span><span class="o">.</span><span class="n">collect</span><span class="p">():</span>
+    <span class="n">rid</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">prediction</span> <span class="o">=</span> <span class="n">row</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;(</span><span class="si">%d</span><span class="s2">, </span><span class="si">%s</span><span class="s2">) --&gt; prob=</span><span class="si">%s</span><span class="s2">, prediction=</span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">rid</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">prob</span><span class="p">),</span> <span class="n">prediction</span><span class="p">))</span>
+</pre></div>
+                <div><small>Find full example code at "examples/src/main/python/ml/pipeline_example.py" in the Spark repo.</small></div>
+            </div>
+
+        </div>
+
+        <h2 id="model-selection-hyperparameter-tuning">模型选择 (超参数调整)</h2>
+
+        <p>使用ML Pipelines的一大好处是超参数优化。有关自动模型选择的更多信息，请参阅<a href="ml-tuning.html">ML调整指南</a>。</p>
+
+
+    </div>
+
+    <!-- /container -->
+</div>
+
+<script src="js/vendor/jquery-1.8.0.min.js"></script>
+<script src="js/vendor/bootstrap.min.js"></script>
+<script src="js/vendor/anchor.min.js"></script>
+<script src="js/main.js"></script>
+
+<!-- MathJax Section -->
+<script type="text/x-mathjax-config">
+            MathJax.Hub.Config({
+                TeX: { equationNumbers: { autoNumber: "AMS" } }
+            });
+        </script>
+<script>
+    // Note that we load MathJax this way to work with local file (file://), HTTP and HTTPS.
+    // We could use "//cdn.mathjax...", but that won't support "file://".
+    (function(d, script) {
+        script = d.createElement('script');
+        script.type = 'text/javascript';
+        script.async = true;
+        script.onload = function(){
+            MathJax.Hub.Config({
+                tex2jax: {
+                    inlineMath: [ ["$", "$"], ["\\\\(","\\\\)"] ],
+                    displayMath: [ ["$$","$$"], ["\\[", "\\]"] ],
+                    processEscapes: true,
+                    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+                }
+            });
+        };
+        script.src = ('https:' == document.location.protocol ? 'https://' : 'http://') +
+            'cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js' +
+            '?config=TeX-AMS-MML_HTMLorMML';
+        d.getElementsByTagName('head')[0].appendChild(script);
+    }(document));
+</script>
+</body>
+</html>

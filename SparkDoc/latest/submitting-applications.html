@@ -1,0 +1,339 @@
+
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Submitting Applications - Spark 2.4.0 Documentation</title>
+
+
+
+
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+    </style>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="../css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="../css/main.css">
+
+    <script src="../js/vendor/modernizr-2.6.1-respond-1.1.0.min.js"></script>
+
+    <link rel="stylesheet" href="../css/pygments-default.css">
+
+
+    <!-- Google analytics script -->
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-32518208-2']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+<!--[if lt IE 7]>
+<p class="chromeframe">You are using an outdated browser. <a href="https://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
+<![endif]-->
+
+<!-- This code is taken from http://twitter.github.com/bootstrap/examples/hero.html -->
+
+<div class="navbar navbar-fixed-top" id="topbar">
+    <div class="navbar-inner">
+        <div class="container">
+            <div class="brand"><a href="index.html">
+                <img src="../img/spark-logo-hd.png" style="height:50px;"/></a><span class="version">2.4.3</span>
+            </div>
+            <ul class="nav">
+                <!--TODO(andyk): Add class="active" attribute to li some how.-->
+                <li><a href="../index.html">概述</a></li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">编程指南<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="../quick-start.html">快速开始</a></li>
+                        <li><a href="../rdd-programming-guide.html">RDDs, Accumulators, Broadcasts Vars</a></li>
+                        <li><a href="../sql-programming-guide.html">SQL, DataFrames, and Datasets</a></li>
+                        <li><a href="../structured-streaming-programming-guide.html">Structured Streaming</a></li>
+                        <li><a href="../streaming-programming-guide.html">Spark Streaming (DStreams)</a></li>
+                        <li><a href="../ml-guide.html">MLlib (Machine Learning)</a></li>
+                        <li><a href="../graphx-programming-guide.html">GraphX (Graph Processing)</a></li>
+                        <li><a href="../sparkr.html">SparkR (R on Spark)</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">API Docs<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="api/scala/index.html#org.apache.spark.package">Scala</a></li>
+                        <li><a href="api/java/index.html">Java</a></li>
+                        <li><a href="api/python/index.html">Python</a></li>
+                        <li><a href="api/R/index.html">R</a></li>
+                        <li><a href="api/sql/index.html">SQL, Built-in Functions</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Deploying<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="cluster-overview.html">Overview</a></li>
+                        <li><a href="../latest/submitting-applications.html">Submitting Applications</a></li>
+                        <li class="divider"></li>
+                        <li><a href="spark-standalone.html">Spark Standalone</a></li>
+                        <li><a href="running-on-mesos.html">Mesos</a></li>
+                        <li><a href="running-on-yarn.html">YARN</a></li>
+                        <li><a href="running-on-kubernetes.html">Kubernetes</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="api.html" class="dropdown-toggle" data-toggle="dropdown">More<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="configuration.html">Configuration</a></li>
+                        <li><a href="monitoring.html">Monitoring</a></li>
+                        <li><a href="tuning.html">Tuning Guide</a></li>
+                        <li><a href="job-scheduling.html">Job Scheduling</a></li>
+                        <li><a href="security.html">Security</a></li>
+                        <li><a href="hardware-provisioning.html">Hardware Provisioning</a></li>
+                        <li class="divider"></li>
+                        <li><a href="building-spark.html">Building Spark</a></li>
+                        <li><a href="https://spark.apache.org/contributing.html">Contributing to Spark</a></li>
+                        <li><a href="https://spark.apache.org/third-party-projects.html">Third Party Projects</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <!--<p class="navbar-text pull-right"><span class="version-text">v2.4.0</span></p>-->
+        </div>
+    </div>
+</div>
+
+<div class="container-wrapper">
+
+
+    <div class="content" id="content">
+
+        <h1 class="title">提交应用程序</h1>
+
+
+        <p>Spark的<code> bin</code> 目录中的 <code>spark-submit</code> 脚本用于在集群上启动应用程序。
+            它可以通过统一的接口使用Spark支持的所有<a href="cluster-overview.html#cluster-manager-types">cluster managers (集群管理)</a>，因此您不必为每个 <a href="http://spark.apache.org/docs/latest/cluster-overview.html#cluster-manager-types"></a> Cluster Manager (集群管理器) 配置应用程序（即：不管集群管理是哪种，都是使用spark-submit提交）。
+        </p>
+
+        <h1 id="bundling-your-applications-dependencies">打包应用依赖</h1>
+        <p>如果您的代码依赖了其它的项目，为了分发代码到 <strong>Spark</strong> 集群中您将需要将它们和您的应用程序一起打包。
+            为此，请创建包含您的代码及其依赖项的 <strong>assembly jar</strong>（或<strong>“uber”jar</strong>）
+            <a href="https://github.com/sbt/sbt-assembly">sbt</a> 和
+            <a href="http://maven.apache.org/plugins/maven-shade-plugin/">Maven</a>
+             都有assembly插件。 当创建 assembly jars时候, 将 Spark 和 Hadoop
+            作为 <code>provided</code> 依赖;  它们不需要被打包，因为在运行时它们已经被 Cluster Manager 提供了。 如果您有一个 assembled jar 您就可以调用 <strong>bin/spark-submit </strong>脚本（如下所示）来传递您的 jar。</p>
+
+        <p>对于 <strong>Python</strong> 来说，您可以使用 <strong>spark-submit</strong> 的 <strong>--py-files</strong> 参数来添加 <strong>.py，.zip 和 .egg</strong> 文件以与您的应用程序一起分发。如果您依赖了多个 <strong>Python</strong> 文件我们推荐将它们打包成一个<strong> .zip 或者 .egg </strong>文件。</p>
+
+        <h1 id="launching-applications-with-spark-submit">使用spark-submit启动应用程序</h1>
+
+        <p>可以使用 <strong>bin / spark-submit</strong>脚本启动应用程序。 这个脚本负责设置 <strong>Spark</strong> 和它的依赖的 <strong>classpath</strong>，并且可以支持Spark所支持的不同  <strong>Cluster Manager</strong> （集群管理）器和 <strong>deploy mode</strong>（部署模式）：</p>
+
+        <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>./bin/spark-submit <span class="se">\</span>
+  --class &lt;main-class&gt; <span class="se">\</span>
+  --master &lt;master-url&gt; <span class="se">\</span>
+  --deploy-mode &lt;deploy-mode&gt; <span class="se">\</span>
+  --conf &lt;key&gt;<span class="o">=</span>&lt;value&gt; <span class="se">\</span>
+  ... <span class="c1"># other options</span>
+  &lt;application-jar&gt; <span class="se">\</span>
+  <span class="o">[</span>application-arguments<span class="o">]</span></code></pre></figure>
+
+        <p>一些常用的选项是：</p>
+
+        <ul>
+            <li><code>--class</code>: 应用程序的入口点(main方法所在类的路径) (例如： <code>org.apache.spark.examples.SparkPi</code>)</li>
+            <li><code>--master</code>: 集群的 <a href="#master-urls">master URL</a> (e.g. <code>spark://23.195.26.187:7077</code>)</li>
+            <li><code>--deploy-mode</code>: 是在 worker 节点（cluster）上还是在本地作为一个外部的客户端（client）部署您的 driver (默认: <code>client</code>) <b> &#8224; </b></li>
+            <li><code>--conf</code>: 按照 <strong>key=value</strong> 格式任意的 Spark 配置属性。对于包含空格的 value（值）使用引号包 “key=value” 起来。</li>
+            <li><code>application-jar</code>: 包括您的应用以及所有依赖的一个打包的 Jar 的路径。该 URL 在您的集群上必须是全局可见的，例如，一个 <strong>hdfs:// path</strong> 或者一个 <strong>file:// path</strong> 在所有节点是可见的。</li>
+            <li><code>application-arguments</code>:如果有的话，传递给主类的main方法的参数。</li>
+        </ul>
+
+        <p> 常见的部署策略是从一台 gateway 机器物理位置与您 worker 在一起的机器（比如，在 standalone EC2 集群中的 Master 节点上）来提交您的应用。在这种设置中，client 模式是合适的。在 client 模式中，driver 直接运行在一个充当集群 client 的 spark-submit 进程内。应用程序的输入和输出直接连到控制台。因此，这个模式特别适合那些设计 REPL（例如，Spark shell）的应用程序。</p>
+
+        <p>或者, 如果您的应用程序是从远离工作机器(spark集群节点)的计算机提交的 (例如，在笔记本电脑上本地提交), 通常使用<code>cluster</code> mode
+            最小化驱动程序和执行程序之间的网络延迟. 目前, 部署模式为 standalone mode 并不支持Python应用程序任务提交的 cluster mode
+
+        <p>对于Python应用程序，只需传递一个.py文件代替 application-jar 而不是传递JAR，并使用--py-files将Python .zip，.egg或.py文件添加到搜索路径中。</p>
+
+        <p>这里有一些选项可用于特定的 <a href="cluster-overview.html#cluster-manager-types">cluster manager</a> 中。例如， <a href="spark-standalone.html">Spark standalone cluster</a> 用 cluster 部署模式，您也可以指定 --supervise 来确保 driver 在 non-zero exit code 失败时可以自动重启。为了列出所有 spark-submit 可用的选项，用 --help 来运行它。这里是一些常见选项的例子
+       </p>
+
+        <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="c1"># Run application locally on 8 cores</span>
+./bin/spark-submit <span class="se">\</span>
+  --class org.apache.spark.examples.SparkPi <span class="se">\</span>
+  --master local<span class="o">[</span><span class="m">8</span><span class="o">]</span> <span class="se">\</span>
+  /path/to/examples.jar <span class="se">\</span>
+  <span class="m">100</span>
+
+<span class="c1"># Run on a Spark standalone cluster in client deploy mode</span>
+./bin/spark-submit <span class="se">\</span>
+  --class org.apache.spark.examples.SparkPi <span class="se">\</span>
+  --master spark://207.184.161.138:7077 <span class="se">\</span>
+  --executor-memory 20G <span class="se">\</span>
+  --total-executor-cores <span class="m">100</span> <span class="se">\</span>
+  /path/to/examples.jar <span class="se">\</span>
+  <span class="m">1000</span>
+
+<span class="c1"># Run on a Spark standalone cluster in cluster deploy mode with supervise</span>
+./bin/spark-submit <span class="se">\</span>
+  --class org.apache.spark.examples.SparkPi <span class="se">\</span>
+  --master spark://207.184.161.138:7077 <span class="se">\</span>
+  --deploy-mode cluster <span class="se">\</span>
+  --supervise <span class="se">\</span>
+  --executor-memory 20G <span class="se">\</span>
+  --total-executor-cores <span class="m">100</span> <span class="se">\</span>
+  /path/to/examples.jar <span class="se">\</span>
+  <span class="m">1000</span>
+
+<span class="c1"># Run on a YARN cluster</span>
+<span class="nb">export</span> <span class="nv">HADOOP_CONF_DIR</span><span class="o">=</span>XXX
+./bin/spark-submit <span class="se">\</span>
+  --class org.apache.spark.examples.SparkPi <span class="se">\</span>
+  --master yarn <span class="se">\</span>
+  --deploy-mode cluster <span class="se">\ </span> <span class="c1"># can be client for client mode</span>
+  --executor-memory 20G <span class="se">\</span>
+  --num-executors <span class="m">50</span> <span class="se">\</span>
+  /path/to/examples.jar <span class="se">\</span>
+  <span class="m">1000</span>
+
+<span class="c1"># Run a Python application on a Spark standalone cluster</span>
+./bin/spark-submit <span class="se">\</span>
+  --master spark://207.184.161.138:7077 <span class="se">\</span>
+  examples/src/main/python/pi.py <span class="se">\</span>
+  <span class="m">1000</span>
+
+<span class="c1"># Run on a Mesos cluster in cluster deploy mode with supervise</span>
+./bin/spark-submit <span class="se">\</span>
+  --class org.apache.spark.examples.SparkPi <span class="se">\</span>
+  --master mesos://207.184.161.138:7077 <span class="se">\</span>
+  --deploy-mode cluster <span class="se">\</span>
+  --supervise <span class="se">\</span>
+  --executor-memory 20G <span class="se">\</span>
+  --total-executor-cores <span class="m">100</span> <span class="se">\</span>
+  http://path/to/examples.jar <span class="se">\</span>
+  <span class="m">1000</span>
+
+<span class="c1"># Run on a Kubernetes cluster in cluster deploy mode</span>
+./bin/spark-submit <span class="se">\</span>
+  --class org.apache.spark.examples.SparkPi <span class="se">\</span>
+  --master k8s://xx.yy.zz.ww:443 <span class="se">\</span>
+  --deploy-mode cluster <span class="se">\</span>
+  --executor-memory 20G <span class="se">\</span>
+  --num-executors <span class="m">50</span> <span class="se">\</span>
+  http://path/to/examples.jar <span class="se">\</span>
+  <span class="m">1000</span></code></pre></figure>
+
+        <h1 id="master-urls">Master URLs</h1>
+
+        <p>传递给 Spark 的 master URL 可以使用下列格式中的一种 :</p>
+
+        <table class="table">
+            <tr><th>Master URL</th><th>Meaning</th></tr>
+            <tr><td> <code>local</code> </td><td> 使用一个线程本地运行 Spark（即，没有并行性）。</td></tr>
+            <tr><td> <code>local[K]</code> </td><td> 使用 K 个 worker 线程本地运行 Spark (理想情况下，设置这个值的数量为您机器的 core 数量). </td></tr>
+            <tr><td> <code>local[*]</code> </td><td> 使用更多的 worker 线程作为逻辑的 core 在您的机器上来本地的运行 Spark。</td></tr>
+            <tr><td> <code>spark://HOST:PORT</code> </td><td> 连接至给定的<a href="spark-standalone.html">Spark standalone
+                cluster</a> master。该<code>spark://HOST:PORT</code> 必须有一个作为您的 master 配置来使用，默认是 7077.
+            </td></tr>
+
+            <tr><td> <code>mesos://HOST:PORT</code> </td><td>
+                连接至给定的 Mesos cluster。该 port（端口）必须有一个作为您的配置来使用，默认是 5050。或者，对于使用了 ZooKeeper 的 Mesos cluster 来说，使用 mesos://zk://...。使用 --deploy-mode cluster 来提交，该 HOST:PORT 应该被配置以连接到 MesosClusterDispatcher。
+            </td></tr>
+            <tr><td> <code>yarn</code> </td><td> 连接至一个 YARN cluster，取决于 --deploy-mode 的值在 client 或者 cluster 模式中。该 cluster 的位置将根据 HADOOP_CONF_DIR 或者 YARN_CONF_DIR 变量来找到。
+            </td></tr>
+
+        </table>
+
+        <h1 id="loading-configuration-from-a-file">从文件中加载配置</h1>
+
+        <p>spark-submit 脚本可以从一个 properties 文件加载默认的 Spark configuration values 并且传递它们到您的应用中去。默认情况下，它将从 Spark 目录下的 conf/spark-defaults.conf 读取配置。更多详细信息，请看 加载默认配置 部分。</p>
+
+        <p>加载默认的 Spark 配置，这种方式可以消除某些标记到 spark-submit 的必要性。例如，如果 spark.master 属性被设置了，您可以在 spark-submit 中安全的省略。一般情况下，明确设置在 SparkConf 上的配置值的优先级最高，然后是传递给 spark-submit 的值，最后才是 default value（默认文件）中的值。</p>
+
+        <p>如果您不是很清楚其中的配置设置来自哪里，您可以通过使用 --verbose 选项来运行 spark-submit 打印出细粒度的调试信息。
+
+        </p>
+
+        <h1 id="advanced-dependency-management">先进的依赖管理</h1>
+        <p>在使用 spark-submit 时，使用 --jars 选项包括的应用程序的 jar 和任何其它的 jar 都将被自动的传输到集群。在 --jars 后面提供的 URL 必须用逗号分隔。该列表传递到 driver 和 executor 的 classpath 中 --jars 不支持目录的形式。</p>
+
+        <p>Spark 使用下面的 URL 方案以允许传播 jar 时使用不同的策略 : </p>
+
+        <ul>
+            <li><strong>file:</strong> - 绝对路径和<code>file:/</code>URI 通过 driver 的 HTTP file server 提供服务，并且每个 executor 会从 driver 的 HTTP server 拉取这些文件</li>
+            <li><strong>hdfs:</strong>, <strong>http:</strong>, <strong>https:</strong>, <strong>ftp:</strong> - 如预期的一样拉取下载文件和 JAR。</li>
+            <li><strong>local:</strong> - 个用 local:/ 开头的 URL 预期作在每个 worker 节点上作为一个本地文件存在。这样意味着没有网络 IO 发生，并且非常适用于那些通过 NFS，GlusterFS，等推倒每个 worker 或共享大型的 file/JAR。</li>
+        </ul>
+
+        <p>注意，那些 JAR 和文件被复制到 working directory（工作目录）用于在 executor 节点上的每个 SparkContext。这可以使用最多的空间显著量随着时间的推移，将需要清理。在 Spark On YARN 模式中，自动执行清理操作。在 Spark standalone 模式中，可以通过配置 spark.worker.cleanup.appDataTtl 属性来执行自动清理。</p>
+
+        <p>用户也可以通过使用 --packages 来提供一个逗号分隔的 maven coordinates（maven 坐标）以包含任何其它的依赖。在使用这个命令时所有可传递的依赖将被处理。其它的 repository（或者在 SBT 中被解析的）可以使用 --repositoies 该标记添加到一个逗号分隔的样式中。这些命令可以与 pyspark，spark-shell 和 spark-submit 配置会使用以包含 Spark Packages（Spark 包）。</p>
+
+        <p>对于 Python 来说，也可以使用 --py-files 选项用于分发 .egg，.zip 和 .py libraries 到 executor 中。
+
+        </p>
+
+        <h1 id="more-information">More Information</h1>
+
+        <p>如果您已经部署了您的应用程序，集群模式概述 描述了在分布式执行中涉及到的组件，以及如何去监控和调试应用程序。</p>
+
+
+    </div>
+
+    <!-- /container -->
+</div>
+
+<script src="js/vendor/jquery-1.8.0.min.js"></script>
+<script src="js/vendor/bootstrap.min.js"></script>
+<script src="js/vendor/anchor.min.js"></script>
+<script src="js/main.js"></script>
+
+<!-- MathJax Section -->
+<script type="text/x-mathjax-config">
+            MathJax.Hub.Config({
+                TeX: { equationNumbers: { autoNumber: "AMS" } }
+            });
+        </script>
+<script>
+    // Note that we load MathJax this way to work with local file (file://), HTTP and HTTPS.
+    // We could use "//cdn.mathjax...", but that won't support "file://".
+    (function(d, script) {
+        script = d.createElement('script');
+        script.type = 'text/javascript';
+        script.async = true;
+        script.onload = function(){
+            MathJax.Hub.Config({
+                tex2jax: {
+                    inlineMath: [ ["$", "$"], ["\\\\(","\\\\)"] ],
+                    displayMath: [ ["$$","$$"], ["\\[", "\\]"] ],
+                    processEscapes: true,
+                    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+                }
+            });
+        };
+        script.src = ('https:' == document.location.protocol ? 'https://' : 'http://') +
+            'cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js' +
+            '?config=TeX-AMS-MML_HTMLorMML';
+        d.getElementsByTagName('head')[0].appendChild(script);
+    }(document));
+</script>
+</body>
+</html>
