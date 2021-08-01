@@ -15,7 +15,7 @@ import org.apache.spark.sql.{DataFrame, Row, SparkSession}
  * 表字段初步处理选出要用的字段存为parquet格式方便使用
  * 根据实际情况cast字段的类型
  */
-object DataRead {
+object DataReadToParquet {
   def main(args: Array[String]): Unit = {
     Logger.getLogger("org").setLevel(Level.ERROR)
     val propFile = args(0)
