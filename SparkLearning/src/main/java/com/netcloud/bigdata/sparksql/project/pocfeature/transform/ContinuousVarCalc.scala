@@ -1,13 +1,9 @@
 package com.netcloud.bigdata.sparksql.project.pocfeature.transform
 
-import org.apache.spark.rdd.RDD
-import java.text.SimpleDateFormat
 
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.{DateType, DoubleType, TimestampType}
-import org.apache.spark.SparkConf
 import org.apache.spark.sql.{Column, Dataset, Row, SaveMode, SparkSession}
-import java.sql.Timestamp
 
 import org.apache.spark.sql.expressions.{Window, WindowSpec}
 
@@ -19,6 +15,7 @@ import org.apache.log4j.Logger
 import org.apache.log4j.Level
 
 object ContinuousVarCalc{
+
   //要计算的时间维度数组
     val timeInterval = Array(
          1,
@@ -607,7 +604,6 @@ object ContinuousVarCalc{
   */
 
   def main(args: Array[String]): Unit = {
-    Logger.getLogger("org").setLevel(Level.ERROR)
     val propFile = args(0)
 
     val prop = PropertiesUtil.loadProperties(propFile)
