@@ -21,7 +21,7 @@ object SparkStreaming11_Req1_BlackList1 {
 
         val kafkaPara: Map[String, Object] = Map[String, Object](
             ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG -> "bigdata01:6667,bigdata02:6667,bigdata03:6667",
-            ConsumerConfig.GROUP_ID_CONFIG -> "atguigu",
+            ConsumerConfig.GROUP_ID_CONFIG -> "weblog",
             "key.deserializer" -> "org.apache.kafka.common.serialization.StringDeserializer",
             "value.deserializer" -> "org.apache.kafka.common.serialization.StringDeserializer"
         )
@@ -29,7 +29,7 @@ object SparkStreaming11_Req1_BlackList1 {
         val kafkaDataDS: InputDStream[ConsumerRecord[String, String]] = KafkaUtils.createDirectStream[String, String](
             ssc,
             LocationStrategies.PreferConsistent,
-            ConsumerStrategies.Subscribe[String, String](Set("atguiguNew"), kafkaPara)
+            ConsumerStrategies.Subscribe[String, String](Set("weblog"), kafkaPara)
         )
         val adClickData = kafkaDataDS.map(
             kafkaData => {

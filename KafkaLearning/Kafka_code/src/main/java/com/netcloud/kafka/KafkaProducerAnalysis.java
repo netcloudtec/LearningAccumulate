@@ -16,7 +16,7 @@ import java.util.concurrent.ExecutionException;
  * 3、有返回值发送： 在 send（）方法里指定一个 Callback 的回调函数，
  */
 public class KafkaProducerAnalysis {
-    public static final String brokerList = "netcloud01:9092";
+    public static final String brokerList = "10.238.251.4:6667";
     public static final String topic = "topic-demo";
 
     public static Properties initConfig() {
@@ -37,11 +37,11 @@ public class KafkaProducerAnalysis {
         Properties props = initConfig();
         //1、创建生产者实例
         Producer<String, String> producer = new KafkaProducer<String, String>(props);
-//        for (int i = 0; i < 100; i++) {
-//            //2、ProducerRecord 构建消息
-//            //3、send()：异步发送 发送消息
-//            producer.send(new ProducerRecord<String, String>(topic,Integer.toString(i)));
-//        }
+        for (int i = 0; i < 100; i++) {
+            //2、ProducerRecord 构建消息
+            //3、send()：异步发送 发送消息
+            producer.send(new ProducerRecord<String, String>(topic,i+","+i));
+        }
 
 //        for (int i = 0; i < 100; i++) {
 //            //2、ProducerRecord 构建消息
@@ -49,20 +49,20 @@ public class KafkaProducerAnalysis {
 //            producer.send(new ProducerRecord<String, String>(topic, 1, Integer.toString(i), Integer.toString(i))).get();
 //        }
 
-        for (int i = 0; i < 100; i++) {
-            //2、ProducerRecord 构建消息
-            //3、send()：异步发送 有返回值
-            producer.send(new ProducerRecord<String, String>(topic,Integer.toString(i)), new Callback() {
-                public void onCompletion(RecordMetadata recordMetadata, Exception exception) {
-                    if (exception != null) {
-                        exception.printStackTrace();
-                    } else {
-                        System.out.println(recordMetadata.topic() + "-" +
-                                recordMetadata.partition() + ":" + recordMetadata.offset());
-                    }
-                }
-            });
-        }
+//        for (int i = 0; i < 100; i++) {
+//            //2、ProducerRecord 构建消息
+//            //3、send()：异步发送 有返回值
+//            producer.send(new ProducerRecord<String, String>(topic,Integer.toString(i)), new Callback() {
+//                public void onCompletion(RecordMetadata recordMetadata, Exception exception) {
+//                    if (exception != null) {
+//                        exception.printStackTrace();
+//                    } else {
+//                        System.out.println(recordMetadata.topic() + "-" +
+//                                recordMetadata.partition() + ":" + recordMetadata.offset());
+//                    }
+//                }
+//            });
+//        }
 
         producer.close();
     }

@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @date 2021/5/7 11:45
  */
 public class KafkaConsumerAnalysis {
-    public static final String brokerList = "netcloud01:9092";
+    public static final String brokerList = "10.238.251.4:6667";
     public static final String topic = "topic-demo";
     public static final String groupid = "group.demo";
     public static final AtomicBoolean isRunning = new AtomicBoolean(true);
