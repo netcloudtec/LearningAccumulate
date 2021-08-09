@@ -27,12 +27,6 @@ public class TransformationDemo02 {
         ConnectedStreams<String, String> result2 = ds1.connect(ds2);//注意:connet可以合并同类型
         ConnectedStreams<String, Long> result3 = ds1.connect(ds3);//注意connet可以合并不同类型
 
-        /*
-        public interface CoMapFunction<IN1, IN2, OUT> extends Function, Serializable {
-            OUT map1(IN1 value) throws Exception;
-            OUT map2(IN2 value) throws Exception;
-        }
-         */
         SingleOutputStreamOperator<String> result = result3.map(new CoMapFunction<String, Long, String>() {
             @Override
             public String map1(String value) throws Exception {
@@ -44,8 +38,6 @@ public class TransformationDemo02 {
                 return "Long:" + value;
             }
         });
-
-
         //TODO 3.sink
         result1.print();
         //result2.print();//注意:connect之后需要做其他的处理,不能直接输出

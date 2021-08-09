@@ -19,7 +19,8 @@ public class TransformationDemo05 {
         env.setRuntimeMode(RuntimeExecutionMode.AUTOMATIC);
 
         //TODO 1.source
-        DataStream<String> linesDS = env.readTextFile("data/input/words.txt");
+        DataStream<String> linesDS = env.readTextFile("data/wc/hello.txt");
+
         SingleOutputStreamOperator<Tuple2<String, Integer>> tupleDS = linesDS.flatMap(new FlatMapFunction<String, Tuple2<String, Integer>>() {
             @Override
             public void flatMap(String value, Collector<Tuple2<String, Integer>> out) throws Exception {

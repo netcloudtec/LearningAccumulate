@@ -51,7 +51,7 @@ public class TransformationDemo04 {
 
 
         //TODO 3.sink
-//        result1.print("result1");
+        result1.print("result1");
         result2.print("result2");
 
 

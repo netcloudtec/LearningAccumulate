@@ -21,7 +21,7 @@ public class TransformationDemo01 {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setRuntimeMode(RuntimeExecutionMode.AUTOMATIC);
         //TODO 1.source
-        DataStream<String> lines = env.socketTextStream("localhost", 9999);
+        DataStream<String> lines = env.socketTextStream("localhost", 7777);
 
         //TODO 2.transformation
         DataStream<String> words = lines.flatMap(new FlatMapFunction<String, String>() {
@@ -33,7 +33,6 @@ public class TransformationDemo01 {
                 }
             }
         });
-
         DataStream<String> filted = words.filter(new FilterFunction<String>() {
             @Override
             public boolean filter(String value) throws Exception {
@@ -49,9 +48,7 @@ public class TransformationDemo01 {
         });
 
         KeyedStream<Tuple2<String, Integer>, String> grouped = wordAndOne.keyBy(t -> t.f0);
-
         //SingleOutputStreamOperator<Tuple2<String, Integer>> result = grouped.sum(1);
-
         SingleOutputStreamOperator<Tuple2<String, Integer>> result = grouped.reduce(new ReduceFunction<Tuple2<String, Integer>>() {
             @Override
             public Tuple2<String, Integer> reduce(Tuple2<String, Integer> value1, Tuple2<String, Integer> value2) throws Exception {
@@ -61,10 +58,8 @@ public class TransformationDemo01 {
                 return Tuple2.of(value1.f0, value1.f1 + value2.f1); //_+_
             }
         });
-
         //TODO 3.sink
         result.print();
-
         //TODO 4.execute
         env.execute();
     }

@@ -29,16 +29,7 @@ public class TransformationDemo03 {
         //需求:对流中的数据按照奇数和偶数拆分并选择
         OutputTag<Integer> oddTag = new OutputTag<>("奇数", TypeInformation.of(Integer.class));
         OutputTag<Integer> evenTag = new OutputTag<>("偶数",TypeInformation.of(Integer.class));
-        //https://www.bilibili.com/video/BV1xJ411n77R
-        //TypeInformation<Tuple2<String, Long>> info = TypeInformation.of(new TypeHint<Tuple2<String, Long>>(){});
-        //OutputTag<Tuple3<String,Integer,Integer>> tag = new OutputTag("偶数",TypeInformation.of(new TypeHint<Tuple3<String, Integer, Integer>>(){}));
-        //OutputTag<Tuple2<String,Integer>> tag2 = new OutputTag<>("",TypeInformation.of(Tuple2<String, Long>));
 
-        /*
-        public abstract class ProcessFunction<I, O> extends AbstractRichFunction {
-            public abstract void processElement(I value, ProcessFunction.Context ctx, Collector<O> out) throws Exception;
-        }
-         */
         SingleOutputStreamOperator<Integer> result = ds.process(new ProcessFunction<Integer, Integer>() {
             @Override
             public void processElement(Integer value, Context ctx, Collector<Integer> out) throws Exception {
