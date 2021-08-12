@@ -3,13 +3,14 @@ package com.netcloudai.bigdata.tabe;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
+import org.apache.flink.types.Row;
 
 import static org.apache.flink.table.api.Expressions.$;
 
 /**
  * @author ysj
  * @version 1.0
- * @date 2021/4/10 00:01
+ * @date 2021/4/15 15:55
  * @Desc 通过外部文件创建一个表 这里我们使用csv格式的文件去创建表（其他格式的文件参考官网）
  * 版本1.12已经弃用下面的创建方式：
  * tableEnv
@@ -18,7 +19,7 @@ import static org.apache.flink.table.api.Expressions.$;
  * .withSchema(...) // 定义表结构
  * .createTemporaryTable("MyTable"); // 创建临时表
  */
-public class FlinkSQL_TableAPI_Demo01_CreateTable {
+public class Demo01_CreateTableFromCSV {
     public static void main(String[] args) throws Exception {
         //TODO 1、创建程序执行环境
         //创建流环境
@@ -32,7 +33,7 @@ public class FlinkSQL_TableAPI_Demo01_CreateTable {
                 "  order_amount DOUBLE\n" +
                 ") WITH (\n" +
                 "  'connector'='filesystem',\n" +
-                "  'path'='/Users/yangshaojun/Bigdata_AI/bigdata_workspace/flink_learning/data/test.csv',\n" +
+                "  'path'='data/tableapi/test.csv',\n" +
                 "  'format'='csv'\n" +
                 ")");
 
@@ -41,19 +42,20 @@ public class FlinkSQL_TableAPI_Demo01_CreateTable {
                 "  order_amount DOUBLE\n" +
                 ") WITH (\n" +
                 "  'connector'='filesystem',\n" +
-                "  'path'='/Users/yangshaojun/Bigdata_AI/bigdata_workspace/flink_learning/data/test2.csv',\n" +
+                "  'path'='data/tableapi/test2',\n" +
                 "  'format'='csv'\n" +
                 ")");
         //TODO 3、Transform操作
+        //SQL 语法
         Table tableResult = tableEnv.sqlQuery("select * from fs_table");
+        //Table API 语法
         Table select = tableEnv.from("fs_table").select($("user_id"), $("order_amount"));
         //TODO 4、Sink 表的输出
         tableResult.executeInsert("out_table");//将处理的结果输出到out_table表
-        //env.execute();
         /**
          *  将Table对象转为Stream 输出,这是必须执行 env.execute();
          */
-        //tableEnv.toAppendStream(select,Row.class).print();
-        //env.execute();
+        tableEnv.toAppendStream(select, Row.class).print();
+        env.execute();
     }
 }
